@@ -9,7 +9,7 @@ SELECT COUNT(*) FROM (
 SELECT DISTINCT(street), suburb, postcode FROM mre_address);
 
 SELECT *
-	FROM mre_addrees
+	FROM mre_address
 		WHERE street IN (SELECT street
 							FROM mre_address
 								GROUP BY street
@@ -63,12 +63,12 @@ SELECT COUNT(*) FROM mre_person p, mre_client c
 	WHERE p.person_id = c.person_id;
 
 DELETE FROM mre_client
-	WHERE NOT person_id IN (SELECT person_id FROM mre_person)
+	WHERE NOT person_id IN (SELECT person_id FROM mre_person);
 
 SELECT COUNT(*) FROM mre_client;
 
 --Client_Wish
-SELECT COUNT(*) FROM mre_client_wish;
+SELECT COUNT(*) FROM mre_clint_wish;
 
 --Feature
 SELECT COUNT(*) FROM mre_feature;
@@ -107,7 +107,7 @@ DELETE FROM mre_property p
 SELECT COUNT(*) FROM mre_property;
 
 --Property_Advert
-SELECT COUNT(*) FROM mre_property
+SELECT COUNT(*) FROM mre_property;
 
 ---Property_Feature
 SELECT COUNT(*) FROM mre_property_feature;
