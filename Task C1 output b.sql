@@ -65,6 +65,19 @@ SELECT COUNT(*) FROM mre_person p, mre_client c
 DELETE FROM mre_client
 	WHERE NOT person_id IN (SELECT person_id FROM mre_person);
 
+select * 
+    from mre_client
+        where min_budget > max_budget;
+        
+UPDATE mre_client
+    SET max_budget = min_budget,
+        min_budget = max_budget
+        WHERE person_id IN(5901, 5900, 5902);
+
+UPDATE mre_client
+    SET min_budget = 0
+        WHERE person_id = 5901;
+
 SELECT COUNT(*) FROM mre_client;
 
 --Client_Wish
