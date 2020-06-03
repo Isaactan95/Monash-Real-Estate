@@ -8,26 +8,10 @@ SELECT COUNT(DISTINCT(street)) FROM mre_address;
 SELECT COUNT(*) FROM (
 SELECT DISTINCT(street), suburb, postcode FROM mre_address);
 
-SELECT *
+SELECT COUNT(*)
 	FROM mre_address
-		WHERE street IN (SELECT street
-							FROM mre_address
-								GROUP BY street
-									HAVING COUNT(*) > 1)
-			ORDER BY street;
-
-DELETE FROM mre_address
-	WHERE address_id IN (
-		SELECT address_id
-			FROM ( SELECT 	address_id,
-							street,
-							suburb,
-							postcode,
-							ROW_NUMBER() OVER (PARTITION BY street, suburb, postcode ORDER BY street, suburb, postcode) as row_num
-								FROM mre_address)
-				WHERE row_num > 1);
-
-SELECT COUNT(*) FROM mre_address;
+		WHERE NOT address_id IN (SELECT address_id FROM mre_property)
+		AND NOT address_id IN (SELECT address_id FROM mre_person);
 
 --Advertisement
 SELECT COUNT(*) FROM mre_advertisement;
@@ -153,5 +137,35 @@ DELETE FROM mre_visit
 	OR NOT client_person_id IN (SELECT person_id FROM mre_client);
 
 SELECT COUNT(*) FROM mre_visit;
+
+
+--Special Case
+SELECT *
+	FROM mre_person
+		WHERE NOT address_id IN (SELECT address_id FROM mre_address);
+
+SELECT *
+	FROM mre_client
+		WHERE person_id = 7001;
+
+SELECT *
+	FROM mre_client_wish
+		WHERE person_id = 7001;
+
+SELECT *
+	FROM mre_feature
+		WHERE feature_code = 726;
+
+DELETE FROM mre_person
+	WHERE person_id = 7001;
+
+DELETE FROM mre_client
+	WHERE person_id = 7001;
+
+DELETE FROM mre_client_wish
+	WHERE person_id = 7001;
+
+DELETE FROM mre_feature
+	WHERE feature_code = 726;
 
 COMMIT;
