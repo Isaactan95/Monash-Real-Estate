@@ -127,11 +127,9 @@ create table budget_dim_l2(
     budget_id char(2),
     budget_description varchar(100));
 
-insert into budget_dim_l2 values ('l', 'Budget between 0 and 999');
-insert into budget_dim_l2 values ('lm', 'Budget between 1000 and 9999');
-insert into budget_dim_l2 values ('m', 'Budget between 10000 and 99999');
-insert into budget_dim_l2 values ('mh', 'Budget between 100000 and 999999');
-insert into budget_dim_l2 values ('h', 'Budget more than 1000000');
+insert into budget_dim_l2 values ('l', 'Budget between 0 and 1000');
+insert into budget_dim_l2 values ('m', 'Budget between 1001 and 100000');
+insert into budget_dim_l2 values ('h', 'Budget more than 100001');
 
 -- Rental period DIM
 create table rental_period_dim_l2(
@@ -218,10 +216,8 @@ alter table temp_client_l2
 
 update temp_client_l2
     set budget_id = case 
-        when max_budget between 0 and 999 then 'l' 
-        when max_budget between 1000 and 9999 then 'lm'
-        when max_budget between 10000 and 99999 then 'm'
-        when max_budget between 100000 and 999999 then 'mh'
+        when max_budget between 0 and 1000 then 'l' 
+        when max_budget between 1001 and 100000 then 'm'
         else 'h' end;
 
 create table mre_client_fact_l2
