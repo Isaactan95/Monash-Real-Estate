@@ -5,9 +5,9 @@ DROP TABLE Feature_Cat_DIM;
 DROP TABLE Property_DIM;
 DROP TABLE Property_Feature_Bridge;
 DROP TABLE Feature_DIM;
+DROP TABLE Wishlist_DIM;
 DROP TABLE Property_Type_DIM;
 DROP TABLE Address_DIM;
-DROP TABLE Suburb_DIM;
 DROP TABLE Postcode_DIM;
 DROP TABLE State_DIM;
 DROP TABLE Advertisement_DIM;
@@ -18,7 +18,6 @@ DROP TABLE Budget_DIM;
 DROP TABLE Rent_Price_DIM;
 DROP TABLE Season_DIM;
 DROP TABLE Time_DIM;
---DROP TABLE Visit_Time_DIM;
 
 --------------------------------
 -- Implement dimension tables --
@@ -64,6 +63,14 @@ CREATE TABLE Feature_DIM AS (
     SELECT DISTINCT * FROM MRE_Feature
 );    
 
+-- Wishlist_DIM
+CREATE TABLE Wishlist_DIM AS (
+    SELECT 
+        Person_ID AS Client_Person_ID,
+        Feature_Code    
+    FROM MRE_Client_Wish
+);
+
 -- Property_Type_DIM
 CREATE TABLE Property_Type_DIM AS (
     SELECT 
@@ -79,13 +86,6 @@ CREATE TABLE Address_DIM AS (
     SELECT DISTINCT
         Address_ID,
         Street,
-        Suburb
-    FROM MRE_Address    
-);
-
--- Suburb_DIM
-CREATE TABLE Suburb_DIM AS (
-    SELECT DISTINCT
         Suburb,
         Postcode
     FROM MRE_Address    
@@ -95,7 +95,6 @@ CREATE TABLE Suburb_DIM AS (
 CREATE TABLE Postcode_DIM AS (
     SELECT DISTINCT * FROM MRE_Postcode
 );    
-
 
 -- State_DIM
 CREATE TABLE State_DIM AS (
@@ -143,12 +142,7 @@ INSERT INTO Budget_DIM VALUES (1, 'Low [0 to 1,000]', 0, 1000);
 INSERT INTO Budget_DIM VALUES (2, 'Low-Medium [0 to 100,000]', 0, 100000);
 INSERT INTO Budget_DIM VALUES (3, 'Medium [1,001 to 100,000]', 1001, 100000);
 INSERT INTO Budget_DIM VALUES (4, 'High [1,001 to 10,000,000]', 1001, 10000000);
-INSERT INTO Budget_DIM VALUES (5, 'High [100,001 to 10,000,000]', 100001, 10000000);
-
--- Client_DIM
-CREATE TABLE Client_DIM AS (
-    SELECT * FROM MRE_Client
-);    
+INSERT INTO Budget_DIM VALUES (5, 'High [100,001 to 10,000,000]', 100001, 10000000);    
 
 -- Rental_Period_DIM
 CREATE TABLE Rental_Period_DIM (
@@ -212,44 +206,6 @@ SET Season_ID =
         WHEN Month BETWEEN 9 AND 11 THEN 4
     END);    
 
-/*
--- Visit_Time_DIM
-CREATE TABLE Visit_Time_DIM AS (
-    SELECT * 
-    FROM (
-        SELECT DISTINCT
-            TO_CHAR(visit_date, 'MM') AS Month
-        FROM (WITH d AS (SELECT TRUNC(TO_DATE('01', 'MM')) - 1 AS dt FROM dual)
-            SELECT dt + LEVEL AS visit_date
-            FROM d
-            CONNECT BY LEVEL <= ADD_MONTHS(dt, 12) - dt)
-        ORDER BY Month ASC), 
-        (
-        SELECT DISTINCT
-            TO_CHAR(visit_date, 'DY') AS Day_of_week
-        FROM (WITH d AS (SELECT TRUNC(TO_DATE('01', 'MM')) - 1 AS dt FROM dual )
-            SELECT dt + LEVEL AS visit_date
-            FROM d
-            CONNECT BY LEVEL <= ADD_MONTHS(dt, 1) - dt)
-        ORDER BY Day_of_week ASC)
-);
-
-ALTER TABLE Visit_Time_DIM
-ADD (   
-    Visit_Time_ID VARCHAR2(5),
-    Season_ID NUMBER
-);
-
-UPDATE Visit_Time_DIM
-SET Visit_Time_ID = Month || Day_of_Week,
-    Season_ID = 
-        (CASE
-            WHEN Month = 12 OR Month BETWEEN 1 AND 2 THEN 1
-            WHEN Month BETWEEN 3 AND 5 THEN 2
-            WHEN Month BETWEEN 6 AND 8 THEN 3
-            WHEN Month BETWEEN 9 AND 11 THEN 4
-        END);   
-*/
 ---------------------------
 -- Implement fact tables --
 ---------------------------
@@ -296,9 +252,11 @@ CREATE TABLE MRE_Rent_TempFACT AS (
         r.Client_Person_ID,
         r.Property_ID,
         r.Rent_Start_Date,
-        r.Rent_End_Date,
+        r.Rent_End_Date,        
         p.Property_No_of_Bedrooms AS Number_of_bedrooms,
         COUNT(pf.Feature_Code) AS Number_of_features,
+        r.Price AS Weekly_Rent_Fee,
+        to_number(to_char(Rent_End_Date, 'WW')) - to_number(to_char(Rent_Start_Date, 'WW')) AS Total_Weeks,
         COUNT(DISTINCT r.Rent_ID) AS Number_of_Rent
     FROM MRE_Rent r, MRE_Property p, MRE_Property_Feature pf
     WHERE r.Property_ID = p.Property_ID
@@ -306,30 +264,38 @@ CREATE TABLE MRE_Rent_TempFACT AS (
     AND r.Client_Person_ID IS NOT NULL
     AND r.Rent_Start_Date IS NOT NULL
     AND r.Rent_End_Date IS NOT NULL
-    GROUP BY r.Agent_Person_ID, r.Client_Person_ID, r.Property_ID, r.Rent_Start_Date, r.Rent_End_Date, p.Property_No_of_Bedrooms
+    GROUP BY r.Agent_Person_ID, r.Client_Person_ID, r.Property_ID, r.Rent_Start_Date, r.Rent_End_Date, p.Property_No_of_Bedrooms, r.Price, to_number(to_char(Rent_End_Date, 'WW')) - to_number(to_char(Rent_Start_Date, 'WW'))
 );
 
 ALTER TABLE MRE_Rent_TempFACT 
-ADD (Scale_ID NUMBER,
-     Feature_Cat_ID NUMBER);
+ADD (Rental_Period_ID NUMBER,
+     Scale_ID NUMBER,
+     Feature_Cat_ID NUMBER,
+     Total_Rent_Fee NUMBER);
      
 UPDATE MRE_Rent_TempFACT
-SET Feature_Cat_ID = 
+SET Rental_Period_ID = 
+        (CASE
+            WHEN MONTHS_BETWEEN(Rent_Start_Date, Rent_End_Date) < 6 THEN 1
+            WHEN MONTHS_BETWEEN(Rent_Start_Date, Rent_End_Date) BETWEEN 6 AND 12 THEN 2
+            WHEN MONTHS_BETWEEN(Rent_Start_Date, Rent_End_Date) > 12 THEN 3
+        END),    
+    Scale_ID = 
+        (CASE
+            WHEN Number_of_bedrooms <= 1 THEN 1
+            WHEN Number_of_bedrooms BETWEEN 2 AND 3 THEN 2
+            WHEN Number_of_bedrooms BETWEEN 4 AND 6 THEN 3            
+            WHEN Number_of_bedrooms BETWEEN 7 AND 10 THEN 4            
+            WHEN Number_of_bedrooms > 10 THEN 5
+        END),
+    Feature_Cat_ID = 
         (CASE
             WHEN Number_of_features < 10 THEN 1
             WHEN Number_of_features BETWEEN 10 AND 20 THEN 2
             WHEN Number_of_features > 20 THEN 3
         END),
-    Scale_ID = 
-        (CASE
-            WHEN Number_of_bedrooms <= 1 THEN 1
-            WHEN Number_of_bedrooms BETWEEN 2 AND 3 THEN 2
-            WHEN Number_of_bedrooms BETWEEN 4 AND 6 THEN 3
-            --WHEN Number_of_bedrooms BETWEEN 3 AND 6 THEN 3
-            WHEN Number_of_bedrooms BETWEEN 7 AND 10 THEN 4
-            --WHEN Number_of_bedrooms BETWEEN 6 AND 10 THEN 4
-            WHEN Number_of_bedrooms > 10 THEN 5
-        END);    
+    Total_Rent_Fee = Weekly_Rent_Fee * Total_Weeks
+;    
 
 CREATE TABLE MRE_Rent_FACT AS (
     SELECT
@@ -338,8 +304,10 @@ CREATE TABLE MRE_Rent_FACT AS (
         Property_ID,
         Rent_Start_Date,
         Rent_End_Date,
+        Rental_Period_ID,
         Scale_ID,
         Feature_Cat_ID,
+        Total_Rent_Fee,
         Number_of_Rent
     FROM MRE_Rent_TempFACT   
 );   
@@ -385,11 +353,9 @@ CREATE TABLE MRE_Client_FACT AS (
 -- MRE_Agent_FACT
 CREATE TABLE MRE_Agent_FACT AS (
     SELECT 
-        a.person_id AS Agent_Person_ID,
-        p.gender,
-        a.salary AS Total_Earnings
-    FROM MRE_Agent a, Person_DIM p
-    WHERE a.person_id = p.person_id
+        Person_ID AS Agent_Person_ID,
+        Salary AS Total_Earnings
+    FROM MRE_Agent
 );
 
 -- MRE_Visit_FACT
@@ -408,7 +374,7 @@ ALTER TABLE MRE_Visit_TempFACT
 ADD Visit_Time_ID VARCHAR2(5);
 
 UPDATE MRE_Visit_TempFACT
-SET Visit_Time_ID = TO_CHAR(Visit_Date, 'MM') || TO_CHAR(Visit_Date, 'DY');
+SET Visit_Time_ID = TO_CHAR(Visit_Date, 'MMDY');
 
 CREATE TABLE MRE_Visit_FACT AS (
     SELECT 
@@ -450,6 +416,8 @@ CREATE TABLE MRE_Advert_FACT AS (
 ----------------------------------------------------
 -- Two-column methodology checking of fact tables --
 ----------------------------------------------------
+-- Numbers should be wrong since tested on non-cleaned data.
+
 -- MRE_Sale_FACT
 SELECT SUM(Total_Sales_Price), SUM(Number_of_Sales) FROM MRE_Sale_FACT; -- 702,593,752 and 916
 SELECT Agent_Person_ID, SUM(Total_Sales_Price), SUM(Number_Of_Sales) FROM MRE_Sale_FACT GROUP BY Agent_Person_ID ORDER BY Agent_Person_ID; -- 702,593,752 and 916
@@ -476,8 +444,6 @@ SELECT Budget_ID, SUM(Number_Of_Clients) FROM MRE_Client_FACT GROUP BY Budget_ID
 -- MRE_Agent_FACT
 SELECT SUM(Total_Earnings) FROM MRE_Agent_FACT; -- 477,290,000
 SELECT Agent_Person_ID, SUM(Total_Earnings) FROM MRE_Agent_FACT GROUP BY Agent_Person_ID ORDER BY Agent_Person_ID; -- 477,290,000
-SELECT Gender, SUM(Total_Earnings) FROM MRE_Agent_FACT GROUP BY Gender ORDER BY Gender; -- 477,290,000
-
 
 -- MRE_Visit_FACT
 SELECT SUM(Number_of_Visits) FROM MRE_Visit_FACT; -- 575
