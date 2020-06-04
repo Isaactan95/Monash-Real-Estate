@@ -3,7 +3,7 @@
 DROP TABLE MRE_Scale_DIM_L0;
 DROP TABLE MRE_Feature_Cat_DIM_L0;
 DROP TABLE MRE_Property_DIM_L0;
-DROP TABLE MRE_Property_Feature_Bridge_L0_L0;
+DROP TABLE MRE_Property_Feature_Bridge_L0;
 DROP TABLE MRE_Feature_DIM_L0;
 DROP TABLE MRE_Wishlist_DIM_L0;
 DROP TABLE MRE_Property_Type_DIM_L0;
@@ -208,12 +208,12 @@ SET Season_ID =
 ---------------------------
 -- Implement fact tables --
 ---------------------------
--- MRE_Sale_FACT
-CREATE TABLE MRE_Sale_TempFACT AS (
+-- MRE_Sale_FACT_L0
+CREATE TABLE MRE_Sale_FACT_L0 AS (
     SELECT 
         s.Agent_Person_ID,
         s.Client_Person_ID,
-        s.Sale_Date,
+        TO_CHAR(s.Sale_Date, 'YYYYMMDy') AS Time_ID,
         s.Property_ID,
         pt.Type_ID,
         s.Price AS Total_Sales_Price,
@@ -223,28 +223,10 @@ CREATE TABLE MRE_Sale_TempFACT AS (
     AND s.Client_Person_ID IS NOT NULL
     AND s.Sale_Date IS NOT NULL
     AND pt.Type_Description = p.Property_Type
-    GROUP BY s.Agent_Person_ID, s.Client_Person_ID, s.Sale_Date, s.Property_ID, pt.Type_ID, s.Price
-);    
+    GROUP BY s.Agent_Person_ID, s.Client_Person_ID, TO_CHAR(s.Sale_Date, 'YYYYMMDy'), s.Property_ID, pt.Type_ID, s.Price
+);           
 
-ALTER TABLE MRE_Sale_TempFACT
-ADD Time_ID CHAR(6);
-    
-UPDATE MRE_Sale_TempFACT 
-SET Time_ID = TO_CHAR(Sale_Date, 'YYYYMM');
-     
-CREATE TABLE MRE_Sale_FACT AS ( 
-    SELECT 
-        Agent_Person_ID,
-        Client_Person_ID,
-        Time_ID,
-        Property_ID,
-        Type_ID,
-        Total_Sales_Price,
-        Number_of_Sales
-    FROM MRE_Sale_TempFACT
-);            
-
--- MRE_Rent_FACT
+-- MRE_Rent_FACT_L0
 CREATE TABLE MRE_Rent_TempFACT AS (
     SELECT
         r.Agent_Person_ID,
@@ -297,7 +279,7 @@ SET Rental_Period_ID =
     Total_Rent_Fee = Weekly_Rent_Fee * Total_Weeks
 ;    
 
-CREATE TABLE MRE_Rent_FACT AS (
+CREATE TABLE MRE_Rent_FACT_L0 AS (
     SELECT
         Agent_Person_ID,
         Client_Person_ID,
@@ -312,7 +294,7 @@ CREATE TABLE MRE_Rent_FACT AS (
     FROM MRE_Rent_TempFACT   
 );   
 
--- MRE_Client_FACT
+-- MRE_Client_FACT_L0
 CREATE TABLE MRE_Client_TempFACT AS (
     SELECT 
         Person_ID AS Client_Person_ID,
@@ -333,7 +315,7 @@ SET Budget_ID =
         WHEN Max_Budget >= 100001 AND Max_Budget <= 10000000 THEN 5
     END);    
 
-CREATE TABLE MRE_Client_FACT AS (
+CREATE TABLE MRE_Client_FACT_L0 AS (
     SELECT 
         Client_Person_ID,
         Budget_ID,
@@ -341,15 +323,15 @@ CREATE TABLE MRE_Client_FACT AS (
     FROM MRE_Client_TempFACT
 );    
 
--- MRE_Agent_FACT
-CREATE TABLE MRE_Agent_FACT AS (
+-- MRE_Agent_FACT_L0
+CREATE TABLE MRE_Agent_FACT_L0 AS (
     SELECT 
         Person_ID AS Agent_Person_ID,
         Salary AS Total_Earnings
     FROM MRE_Agent
 );
 
--- MRE_Visit_FACT
+-- MRE_Visit_FACT_L0
 CREATE TABLE MRE_Visit_TempFACT AS (
     SELECT DISTINCT 
         Client_Person_ID,
@@ -367,7 +349,7 @@ ADD Visit_Time_ID VARCHAR2(5);
 UPDATE MRE_Visit_TempFACT
 SET Visit_Time_ID = TO_CHAR(Visit_Date, 'MMDY');
 
-CREATE TABLE MRE_Visit_FACT AS (
+CREATE TABLE MRE_Visit_FACT_L0 AS (
     SELECT 
         Client_Person_ID,
         Agent_Person_ID,
@@ -377,74 +359,60 @@ CREATE TABLE MRE_Visit_FACT AS (
     FROM MRE_Visit_TempFACT    
 );
 
--- MRE_Advert_FACT
-CREATE TABLE MRE_Advert_TempFACT AS (
+-- MRE_Advert_FACT_L0
+CREATE TABLE MRE_Advert_FACT_L0 AS (
     SELECT DISTINCT
         pa.Property_ID,
         pa.Advert_ID,
-        p.Property_Date_Added,
+        TO_CHAR(p.Property_Date_Added, 'YYYYMMDy') AS Time_ID,
         COUNT(pa.Advert_ID) AS Number_of_Adverts
     FROM MRE_Property_Advert pa, MRE_Property p 
-    WHERE pa.property_id = p.property_id
-    GROUP BY pa.Property_ID, pa.Advert_ID, p.Property_Date_Added
+    WHERE pa.Property_ID = p.Property_ID
+    GROUP BY pa.Property_ID, pa.Advert_ID, TO_CHAR(p.Property_Date_Added, 'YYYYMMDy')
 );
 
-ALTER TABLE MRE_Advert_TempFACT
-ADD Time_ID CHAR(6);
-
-UPDATE MRE_Advert_TempFACT
-SET Time_ID = TO_CHAR(Property_Date_Added, 'YYYYMM');
-
-CREATE TABLE MRE_Advert_FACT AS (
-    SELECT
-        Property_ID,
-        Advert_ID,
-        Time_ID,
-        Number_of_Adverts
-    FROM MRE_Advert_TempFACT    
-);
 
 ----------------------------------------------------
 -- Two-column methodology checking of fact tables --
 ----------------------------------------------------
 -- Numbers should be wrong since tested on non-cleaned data.
 
--- MRE_Sale_FACT
-SELECT SUM(Total_Sales_Price), SUM(Number_of_Sales) FROM MRE_Sale_FACT; -- 702,593,752 and 916
-SELECT Agent_Person_ID, SUM(Total_Sales_Price), SUM(Number_Of_Sales) FROM MRE_Sale_FACT GROUP BY Agent_Person_ID ORDER BY Agent_Person_ID; -- 702,593,752 and 916
-SELECT Client_Person_ID, SUM(Total_Sales_Price), SUM(Number_Of_Sales) FROM MRE_Sale_FACT GROUP BY Client_Person_ID ORDER BY Client_Person_ID; -- 702,593,752 and 916 
-SELECT Time_ID, SUM(Total_Sales_Price), SUM(Number_Of_Sales) FROM MRE_Sale_FACT GROUP BY Time_ID ORDER BY Time_ID; -- 702,593,752 and 916 
-SELECT Property_ID, SUM(Total_Sales_Price), SUM(Number_Of_Sales) FROM MRE_Sale_FACT GROUP BY Property_ID ORDER BY Property_ID; -- 702,593,752 and 916  
-SELECT Type_ID, SUM(Total_Sales_Price), SUM(Number_Of_Sales) FROM MRE_Sale_FACT GROUP BY Type_ID ORDER BY Type_ID; -- 702,593,752 and 916  
+-- MRE_Sale_FACT_L0
+SELECT SUM(Total_Sales_Price), SUM(Number_of_Sales) FROM MRE_Sale_FACT_L0; -- 702,593,752 and 916
+SELECT Agent_Person_ID, SUM(Total_Sales_Price), SUM(Number_Of_Sales) FROM MRE_Sale_FACT_L0 GROUP BY Agent_Person_ID ORDER BY Agent_Person_ID; -- 702,593,752 and 916
+SELECT Client_Person_ID, SUM(Total_Sales_Price), SUM(Number_Of_Sales) FROM MRE_Sale_FACT_L0 GROUP BY Client_Person_ID ORDER BY Client_Person_ID; -- 702,593,752 and 916 
+SELECT Time_ID, SUM(Total_Sales_Price), SUM(Number_Of_Sales) FROM MRE_Sale_FACT_L0 GROUP BY Time_ID ORDER BY Time_ID; -- 702,593,752 and 916 
+SELECT Property_ID, SUM(Total_Sales_Price), SUM(Number_Of_Sales) FROM MRE_Sale_FACT_L0 GROUP BY Property_ID ORDER BY Property_ID; -- 702,593,752 and 916  
+SELECT Type_ID, SUM(Total_Sales_Price), SUM(Number_Of_Sales) FROM MRE_Sale_FACT_L0 GROUP BY Type_ID ORDER BY Type_ID; -- 702,593,752 and 916  
 
--- MRE_Rent_FACT
-SELECT SUM(Number_of_Rent) FROM MRE_Rent_FACT; -- 1116
-SELECT Agent_Person_ID, SUM(Number_Of_Rent) FROM MRE_Rent_FACT GROUP BY Agent_Person_ID ORDER BY Agent_Person_ID; -- 1116
-SELECT Client_Person_ID, SUM(Number_Of_Rent) FROM MRE_Rent_FACT GROUP BY Client_Person_ID ORDER BY Client_Person_ID; -- 1116
-SELECT Property_ID, SUM(Number_Of_Rent) FROM MRE_Rent_FACT GROUP BY Property_ID ORDER BY Property_ID; -- 1116
-SELECT Rent_Start_Date, SUM(Number_Of_Rent) FROM MRE_Rent_FACT GROUP BY Rent_Start_Date ORDER BY Rent_Start_Date; -- 1116
-SELECT Rent_End_Date, SUM(Number_Of_Rent) FROM MRE_Rent_FACT GROUP BY Rent_End_Date ORDER BY Rent_End_Date; -- 1116
-SELECT Scale_ID, SUM(Number_Of_Rent) FROM MRE_Rent_FACT GROUP BY Scale_ID ORDER BY Scale_ID; -- 1116
-SELECT Feature_Cat_ID, SUM(Number_Of_Rent) FROM MRE_Rent_FACT GROUP BY Feature_Cat_ID ORDER BY Feature_Cat_ID; -- 1116
+-- MRE_Rent_FACT_L0
+SELECT SUM(Number_of_Rent) FROM MRE_Rent_FACT_L0; -- 1116
+SELECT Agent_Person_ID, SUM(Number_Of_Rent) FROM MRE_Rent_FACT_L0 GROUP BY Agent_Person_ID ORDER BY Agent_Person_ID; -- 1116
+SELECT Client_Person_ID, SUM(Number_Of_Rent) FROM MRE_Rent_FACT_L0 GROUP BY Client_Person_ID ORDER BY Client_Person_ID; -- 1116
+SELECT Property_ID, SUM(Number_Of_Rent) FROM MRE_Rent_FACT_L0 GROUP BY Property_ID ORDER BY Property_ID; -- 1116
+SELECT Rent_Start_Date, SUM(Number_Of_Rent) FROM MRE_Rent_FACT_L0 GROUP BY Rent_Start_Date ORDER BY Rent_Start_Date; -- 1116
+SELECT Rent_End_Date, SUM(Number_Of_Rent) FROM MRE_Rent_FACT_L0 GROUP BY Rent_End_Date ORDER BY Rent_End_Date; -- 1116
+SELECT Scale_ID, SUM(Number_Of_Rent) FROM MRE_Rent_FACT_L0 GROUP BY Scale_ID ORDER BY Scale_ID; -- 1116
+SELECT Feature_Cat_ID, SUM(Number_Of_Rent) FROM MRE_Rent_FACT_L0 GROUP BY Feature_Cat_ID ORDER BY Feature_Cat_ID; -- 1116
 
--- MRE_Client_FACT
-SELECT SUM(Number_Of_Clients) FROM MRE_Client_FACT; -- 3339
-SELECT Client_Person_ID, SUM(Number_Of_Clients) FROM MRE_Client_FACT GROUP BY Client_Person_ID ORDER BY Client_Person_ID; -- 3339
-SELECT Budget_ID, SUM(Number_Of_Clients) FROM MRE_Client_FACT GROUP BY Budget_ID ORDER BY Budget_ID; -- 3339
+-- MRE_Client_FACT_L0
+SELECT SUM(Number_Of_Clients) FROM MRE_Client_FACT_L0; -- 3339
+SELECT Client_Person_ID, SUM(Number_Of_Clients) FROM MRE_Client_FACT_L0 GROUP BY Client_Person_ID ORDER BY Client_Person_ID; -- 3339
+SELECT Budget_ID, SUM(Number_Of_Clients) FROM MRE_Client_FACT_L0 GROUP BY Budget_ID ORDER BY Budget_ID; -- 3339
 
--- MRE_Agent_FACT
-SELECT SUM(Total_Earnings) FROM MRE_Agent_FACT; -- 477,290,000
-SELECT Agent_Person_ID, SUM(Total_Earnings) FROM MRE_Agent_FACT GROUP BY Agent_Person_ID ORDER BY Agent_Person_ID; -- 477,290,000
+-- MRE_Agent_FACT_L0
+SELECT SUM(Total_Earnings) FROM MRE_Agent_FACT_L0; -- 477,290,000
+SELECT Agent_Person_ID, SUM(Total_Earnings) FROM MRE_Agent_FACT_L0 GROUP BY Agent_Person_ID ORDER BY Agent_Person_ID; -- 477,290,000
 
--- MRE_Visit_FACT
-SELECT SUM(Number_of_Visits) FROM MRE_Visit_FACT; -- 575
-SELECT Client_Person_ID, SUM(Number_of_Visits) FROM MRE_Visit_FACT GROUP BY Client_Person_ID ORDER BY Client_Person_ID; -- 575
-SELECT Agent_Person_ID, SUM(Number_of_Visits) FROM MRE_Visit_FACT GROUP BY Agent_Person_ID ORDER BY Agent_Person_ID; -- 575
-SELECT Property_ID, SUM(Number_of_Visits) FROM MRE_Visit_FACT GROUP BY Property_ID ORDER BY Property_ID; -- 575
-SELECT Visit_Time_ID, SUM(Number_of_Visits) FROM MRE_Visit_FACT GROUP BY Visit_Time_ID ORDER BY Visit_Time_ID; -- 575
+-- MRE_Visit_FACT_L0
+SELECT SUM(Number_of_Visits) FROM MRE_Visit_FACT_L0; -- 575
+SELECT Client_Person_ID, SUM(Number_of_Visits) FROM MRE_Visit_FACT_L0 GROUP BY Client_Person_ID ORDER BY Client_Person_ID; -- 575
+SELECT Agent_Person_ID, SUM(Number_of_Visits) FROM MRE_Visit_FACT_L0 GROUP BY Agent_Person_ID ORDER BY Agent_Person_ID; -- 575
+SELECT Property_ID, SUM(Number_of_Visits) FROM MRE_Visit_FACT_L0 GROUP BY Property_ID ORDER BY Property_ID; -- 575
+SELECT Visit_Time_ID, SUM(Number_of_Visits) FROM MRE_Visit_FACT_L0 GROUP BY Visit_Time_ID ORDER BY Visit_Time_ID; -- 575
 
--- MRE_Advert_FACT
-SELECT SUM(Number_of_Adverts) FROM MRE_Advert_FACT; -- 3646
-SELECT Property_ID, SUM(Number_of_Adverts) FROM MRE_Advert_FACT GROUP BY Property_ID ORDER BY Property_ID; -- 3646
-SELECT Advert_ID, SUM(Number_of_Adverts) FROM MRE_Advert_FACT GROUP BY Advert_ID ORDER BY Advert_ID; -- 3646
-SELECT Time_ID, SUM(Number_of_Adverts) FROM MRE_Advert_FACT GROUP BY Time_ID ORDER BY Time_ID; -- 3646
+-- MRE_Advert_FACT_L0
+SELECT SUM(Number_of_Adverts) FROM MRE_Advert_FACT_L0; -- 3646
+SELECT Property_ID, SUM(Number_of_Adverts) FROM MRE_Advert_FACT_L0 GROUP BY Property_ID ORDER BY Property_ID; -- 3646
+SELECT Advert_ID, SUM(Number_of_Adverts) FROM MRE_Advert_FACT_L0 GROUP BY Advert_ID ORDER BY Advert_ID; -- 3646
+SELECT Time_ID, SUM(Number_of_Adverts) FROM MRE_Advert_FACT_L0 GROUP BY Time_ID ORDER BY Time_ID; -- 3646
