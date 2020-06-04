@@ -147,17 +147,6 @@ create table wishlist_dim_l2
     as select distinct * 
         from mre_clint_wish;
 
--- Budget dimension 
-create table budget_dim_l2(
-    budget_id char(2),
-    budget_description varchar(100));
-
-insert into budget_dim_l2 values ('l', 'Budget between 0 and 999');
-insert into budget_dim_l2 values ('lm', 'Budget between 1000 and 9999');
-insert into budget_dim_l2 values ('m', 'Budget between 10000 and 99999');
-insert into budget_dim_l2 values ('mh', 'Budget between 100000 and 999999');
-insert into budget_dim_l2 values ('h', 'Budget more than 1000000');
-
 -- Rent price dimension
 create table rent_price_dim_l2
     as select property_id, rent_start_date, rent_end_date, price
@@ -210,11 +199,6 @@ insert into season_dim_l2 values(1, 'Spring');
 insert into season_dim_l2 values(2, 'Summer');
 insert into season_dim_l2 values(3, 'Autumn');
 insert into season_dim_l2 values(4, 'Winter');
-
--- Property dimension
-create table property_dim_l2
-    as select property_id, address_id
-        from mre_property;
 
 -- Fact tables
 -- Agent fact table
