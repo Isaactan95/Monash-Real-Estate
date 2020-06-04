@@ -1,78 +1,79 @@
 -- Task C 2b)
 -- Level 0 multi-fact star schema
-DROP TABLE Scale_DIM;
-DROP TABLE Feature_Cat_DIM;
-DROP TABLE Property_DIM;
-DROP TABLE Property_Feature_Bridge;
-DROP TABLE Feature_DIM;
-DROP TABLE Wishlist_DIM;
-DROP TABLE Property_Type_DIM;
-DROP TABLE Address_DIM;
-DROP TABLE Postcode_DIM;
-DROP TABLE State_DIM;
-DROP TABLE Advertisement_DIM;
-DROP TABLE Person_DIM;
-DROP TABLE Agent_Office_DIM;
-DROP TABLE Office_DIM;
-DROP TABLE Budget_DIM;
-DROP TABLE Rent_Price_DIM;
-DROP TABLE Season_DIM;
-DROP TABLE Time_DIM;
+DROP TABLE MRE_Scale_DIM_L0;
+DROP TABLE MRE_Feature_Cat_DIM_L0;
+DROP TABLE MRE_Property_DIM_L0;
+DROP TABLE MRE_Property_Feature_Bridge_L0_L0;
+DROP TABLE MRE_Feature_DIM_L0;
+DROP TABLE MRE_Wishlist_DIM_L0;
+DROP TABLE MRE_Property_Type_DIM_L0;
+DROP TABLE MRE_Address_DIM_L0;
+DROP TABLE MRE_Postcode_DIM_L0;
+DROP TABLE MRE_State_DIM_L0;
+DROP TABLE MRE_Advertisement_DIM_L0;
+DROP TABLE MRE_Person_DIM_L0;
+DROP TABLE MRE_Agent_Office_DIM_L0;
+DROP TABLE MRE_Office_DIM_L0;
+DROP TABLE MRE_Budget_DIM_L0;
+DROP TABLE MRE_Rent_Price_DIM_L0;
+DROP TABLE MRE_Season_DIM_L0;
+DROP TABLE MRE_Time_DIM_L0;
 
 --------------------------------
 -- Implement dimension tables --
 --------------------------------
--- Scale_DIM
-CREATE TABLE Scale_DIM (
-    Scale_id NUMBER,
-    Scale_description VARCHAR2(100)
+-- MRE_Scale_DIM_L0
+CREATE TABLE MRE_Scale_DIM_L0 (
+    Scale_ID NUMBER,
+    Scale_Description VARCHAR2(100)
 );
 
-INSERT INTO Scale_DIM VALUES (1, 'Extra small: <= 1 bedroom');
-INSERT INTO Scale_DIM VALUES (2, 'Small: 2-3 bedrooms');
-INSERT INTO Scale_DIM VALUES (3, 'Medium: 3-6 bedrooms');
-INSERT INTO Scale_DIM VALUES (4, 'Large: 6-10 bedrooms');
-INSERT INTO Scale_DIM VALUES (5, 'Extra large: > 10 bedrooms');
+INSERT INTO MRE_Scale_DIM_L0 VALUES (1, 'Extra small: <= 1 bedroom');
+INSERT INTO MRE_Scale_DIM_L0 VALUES (2, 'Small: 2-3 bedrooms');
+INSERT INTO MRE_Scale_DIM_L0 VALUES (3, 'Medium: 3-6 bedrooms');
+INSERT INTO MRE_Scale_DIM_L0 VALUES (4, 'Large: 6-10 bedrooms');
+INSERT INTO MRE_Scale_DIM_L0 VALUES (5, 'Extra large: > 10 bedrooms');
 
--- Feature_Cat_DIM
-CREATE TABLE Feature_Cat_DIM (
-    Feature_cat_id NUMBER,
-    Feature_cat_description VARCHAR2(100)
+-- MRE_Feature_CAT_DIM_L0
+CREATE TABLE MRE_Feature_CAT_DIM_L0 (
+    Feature_CAT_ID NUMBER,
+    Feature_CAT_Description VARCHAR2(100)
 );
 
-INSERT INTO Feature_Cat_DIM VALUES (1, 'Very basic: < 10 features');
-INSERT INTO Feature_Cat_DIM VALUES (2, 'Standard: 10-20 features');
-INSERT INTO Feature_Cat_DIM VALUES (3, 'Luxurious: > 20 features');
+INSERT INTO MRE_Feature_CAT_DIM_L0 VALUES (1, 'Very basic: < 10 features');
+INSERT INTO MRE_Feature_CAT_DIM_L0 VALUES (2, 'Standard: 10-20 features');
+INSERT INTO MRE_Feature_CAT_DIM_L0 VALUES (3, 'Luxurious: > 20 features');
     
--- Property_DIM
-CREATE TABLE Property_DIM AS (
+-- MRE_Property_DIM_L0
+CREATE TABLE MRE_Property_DIM_L0 AS (
     SELECT 
-        p.Property_id,
+        p.Property_ID,
+        p.Property_Date_Added,
         a.Suburb
     FROM MRE_Property p, MRE_Address a
-    WHERE p.address_id = a.address_id
+    WHERE p.Address_ID = a.Address_ID
 );    
 
--- Property_Feature_Bridge
-CREATE TABLE Property_Feature_Bridge AS (
+-- Property_Feature_Bridge_L0
+CREATE TABLE Property_Feature_Bridge_L0 AS (
     SELECT DISTINCT * FROM MRE_Property_Feature
 );
 
--- Feature_DIM
-CREATE TABLE Feature_DIM AS (
+-- MRE_Feature_DIM_L0
+CREATE TABLE MRE_Feature_DIM_L0 AS (
     SELECT DISTINCT * FROM MRE_Feature
 );    
 
--- Wishlist_DIM
-CREATE TABLE Wishlist_DIM AS (
+-- MRE_Wishlist_DIM_L0
+CREATE TABLE MRE_Wishlist_DIM_L0 AS (
     SELECT 
         Person_ID AS Client_Person_ID,
         Feature_Code    
     FROM MRE_Client_Wish
 );
 
--- Property_Type_DIM
-CREATE TABLE Property_Type_DIM AS (
+-- MRE_Property_Type_DIM_L0
+CREATE TABLE MRE_Property_Type_DIM_L0 AS (
     SELECT 
         ROW_NUMBER() OVER(ORDER BY 1) AS Type_ID,
         Type_Description
@@ -81,8 +82,8 @@ CREATE TABLE Property_Type_DIM AS (
           FROM MRE_Property)
 );
 
--- Address_DIM
-CREATE TABLE Address_DIM AS (
+-- MRE_Address_DIM_L0
+CREATE TABLE MRE_Address_DIM_L0 AS (
     SELECT DISTINCT
         Address_ID,
         Street,
@@ -91,23 +92,23 @@ CREATE TABLE Address_DIM AS (
     FROM MRE_Address    
 );
 
--- Postcode_DIM
-CREATE TABLE Postcode_DIM AS (
+-- MRE_Postcode_DIM_L0
+CREATE TABLE MRE_Postcode_DIM_L0 AS (
     SELECT DISTINCT * FROM MRE_Postcode
 );    
 
--- State_DIM
-CREATE TABLE State_DIM AS (
+-- MRE_State_DIM_L0
+CREATE TABLE MRE_State_DIM_L0 AS (
     SELECT DISTINCT * FROM MRE_State
 );    
 
--- Advertisement_DIM
-CREATE TABLE Advertisement_DIM AS (
+-- MRE_Advertisement_DIM_L0
+CREATE TABLE MRE_Advertisement_DIM_L0 AS (
     SELECT DISTINCT * FROM MRE_Advertisement
 );    
 
--- Person_DIM
-CREATE TABLE Person_DIM AS (
+-- MRE_Person_DIM_L0
+CREATE TABLE MRE_Person_DIM_L0 AS (
     SELECT DISTINCT
         Person_ID,
         First_Name,
@@ -117,66 +118,64 @@ CREATE TABLE Person_DIM AS (
     FROM MRE_Person    
 );
 
--- Agent_Office_DIM
-CREATE TABLE Agent_Office_DIM AS (
+-- MRE_Agent_Office_DIM_L0
+CREATE TABLE MRE_Agent_Office_DIM_L0 AS (
     SELECT DISTINCT 
         Person_ID AS Agent_Person_ID,
         Office_ID
     FROM MRE_Agent_Office
 );
 
--- Office_DIM
-CREATE TABLE Office_DIM AS (
+-- MRE_Office_DIM_L0
+CREATE TABLE MRE_Office_DIM_L0 AS (
     SELECT DISTINCT * FROM MRE_Office
 );
 
--- Budget_DIM
-CREATE TABLE Budget_DIM (
+-- MRE_Budget_DIM_L0
+CREATE TABLE MRE_Budget_DIM_L0 (
     Budget_ID NUMBER,
-    Budget_description VARCHAR2(100),
-    Min_budget NUMBER,
-    Max_budget NUMBER    
+    Budget_Description VARCHAR2(100),
+    Min_Budget NUMBER,
+    Max_Budget NUMBER    
 );
 
-INSERT INTO Budget_DIM VALUES (1, 'Low [0 to 1,000]', 0, 1000);
-INSERT INTO Budget_DIM VALUES (2, 'Low-Medium [0 to 100,000]', 0, 100000);
-INSERT INTO Budget_DIM VALUES (3, 'Medium [1,001 to 100,000]', 1001, 100000);
-INSERT INTO Budget_DIM VALUES (4, 'High [1,001 to 10,000,000]', 1001, 10000000);
-INSERT INTO Budget_DIM VALUES (5, 'High [100,001 to 10,000,000]', 100001, 10000000);    
+INSERT INTO MRE_Budget_DIM_L0 VALUES (1, 'Low [0 to 1,000]', 0, 1000);
+INSERT INTO MRE_Budget_DIM_L0 VALUES (3, 'Medium [1,001 to 100,000]', 1001, 100000);
+INSERT INTO MRE_Budget_DIM_L0 VALUES (5, 'High [100,001 to 10,000,000]', 100001, 10000000);    
 
--- Rental_Period_DIM
-CREATE TABLE Rental_Period_DIM (
+-- MRE_Rental_Period_DIM_L0
+CREATE TABLE Rental_Period_DIM_L0 (
     Rental_Period_ID NUMBER,
-    Rental_period_Description VARCHAR2(60)
+    Rental_Period_Description VARCHAR2(60)
 );
 
-INSERT INTO Rental_Period_DIM VALUES (1, 'Short: < 6 months');
-INSERT INTO Rental_Period_DIM VALUES (2, 'Medium: 6 - 12 months');
-INSERT INTO Rental_Period_DIM VALUES (3, 'Long: > 12 months');
+INSERT INTO MRE_Rental_Period_DIM_L0 VALUES (1, 'Short: < 6 months');
+INSERT INTO MRE_Rental_Period_DIM_L0 VALUES (2, 'Medium: 6 - 12 months');
+INSERT INTO MRE_Rental_Period_DIM_L0 VALUES (3, 'Long: > 12 months');
 
--- Rent_Price_DIM
-CREATE TABLE Rent_Price_DIM AS (
+-- MRE_Rent_Price_DIM_L0
+CREATE TABLE MRE_Rent_Price_DIM_L0 AS (
     SELECT DISTINCT
         Property_ID,
-        Rent_start_date AS Start_date,
-        Rent_end_date AS End_date,
+        Rent_Start_Date AS Start_date,
+        Rent_End_Date AS End_date,
         Price
     FROM MRE_Rent    
 );
 
--- Season_DIM
-CREATE TABLE Season_DIM (
+-- MRE_Season_DIM_L0
+CREATE TABLE MRE_Season_DIM_L0 (
     Season_ID NUMBER,
     Season_Description VARCHAR2(10)
 );
 
-INSERT INTO Season_DIM VALUES (1, 'Summer');
-INSERT INTO Season_DIM VALUES (2, 'Autumn');
-INSERT INTO Season_DIM VALUES (3, 'Winter');
-INSERT INTO Season_DIM VALUES (4, 'Spring');
+INSERT INTO MRE_Season_DIM_L0 VALUES (1, 'Summer');
+INSERT INTO MRE_Season_DIM_L0 VALUES (2, 'Autumn');
+INSERT INTO MRE_Season_DIM_L0 VALUES (3, 'Winter');
+INSERT INTO MRE_Season_DIM_L0 VALUES (4, 'Spring');
 
--- Time_DIM
-CREATE TABLE Time_DIM AS (
+-- MRE_Time_DIM_L0
+CREATE TABLE MRE_Time_DIM_L0 AS (
     SELECT DISTINCT
         TO_CHAR(d.dates, 'YYYYMMDY') AS Time_ID,
         TO_CHAR(d.dates, 'YYYY') AS Year,
@@ -194,10 +193,10 @@ CREATE TABLE Time_DIM AS (
         ) d        
 );    
       
-ALTER TABLE Time_DIM
+ALTER TABLE MRE_Time_DIM_L0
 ADD Season_ID NUMBER;
 
-UPDATE Time_DIM
+UPDATE MRE_Time_DIM_L0
 SET Season_ID = 
     (CASE
         WHEN Month = 12 OR Month BETWEEN 1 AND 2 THEN 1
@@ -219,7 +218,7 @@ CREATE TABLE MRE_Sale_TempFACT AS (
         pt.Type_ID,
         s.Price AS Total_Sales_Price,
         COUNT(s.Sale_ID) AS Number_of_Sales
-    FROM MRE_Sale s, MRE_Property p, Property_Type_DIM pt
+    FROM MRE_Sale s, MRE_Property p, MRE_Property_Type_DIM_L0 pt
     WHERE s.Property_ID = p.Property_ID
     AND s.Client_Person_ID IS NOT NULL
     AND s.Sale_Date IS NOT NULL
@@ -264,7 +263,8 @@ CREATE TABLE MRE_Rent_TempFACT AS (
     AND r.Client_Person_ID IS NOT NULL
     AND r.Rent_Start_Date IS NOT NULL
     AND r.Rent_End_Date IS NOT NULL
-    GROUP BY r.Agent_Person_ID, r.Client_Person_ID, r.Property_ID, r.Rent_Start_Date, r.Rent_End_Date, p.Property_No_of_Bedrooms, r.Price, to_number(to_char(Rent_End_Date, 'WW')) - to_number(to_char(Rent_Start_Date, 'WW'))
+    GROUP BY r.Agent_Person_ID, r.Client_Person_ID, r.Property_ID, r.Rent_Start_Date, r.Rent_End_Date, 
+             p.Property_No_of_Bedrooms, r.Price, TO_NUMBER(TO_CHAR(Rent_End_Date, 'WW')) - TO_NUMBER(TO_CHAR(Rent_Start_Date, 'WW'))
 );
 
 ALTER TABLE MRE_Rent_TempFACT 
@@ -316,10 +316,9 @@ CREATE TABLE MRE_Rent_FACT AS (
 CREATE TABLE MRE_Client_TempFACT AS (
     SELECT 
         Person_ID AS Client_Person_ID,
-        Min_Budget,
         Max_Budget,
         COUNT(Person_ID) AS Number_of_Clients
-    FROM Client_DIM
+    FROM Client_DIM_L0
     GROUP BY Person_ID, Min_Budget, Max_Budget
 );
 
@@ -329,18 +328,10 @@ ADD Budget_ID VARCHAR2(2);
 UPDATE MRE_Client_TempFACT
 SET Budget_ID = 
     (CASE
-        WHEN Min_Budget >= 0 AND Max_Budget <= 1000 THEN 1
-        WHEN Min_Budget >= 1001 AND Max_Budget <= 100000 THEN 3
-        WHEN Min_Budget >= 100001 AND Max_Budget <= 10000000 THEN 5
+        WHEN Max_Budget >= 0 AND Max_Budget <= 1000 THEN 1
+        WHEN Max_Budget >= 1001 AND Max_Budget <= 100000 THEN 3
+        WHEN Max_Budget >= 100001 AND Max_Budget <= 10000000 THEN 5
     END);    
-
-UPDATE MRE_Client_TempFACT
-SET Budget_ID = 
-    (CASE
-        WHEN Min_Budget >= 0 AND Max_Budget <= 100000 THEN 2
-        WHEN Min_Budget >= 1001 AND Max_Budget <= 10000000 THEN 4
-    END)
-WHERE Budget_ID IS NULL;    
 
 CREATE TABLE MRE_Client_FACT AS (
     SELECT 
