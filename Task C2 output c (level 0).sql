@@ -1,23 +1,33 @@
--- Task C 2b)
+    -- Task C 2b)
 -- Level 0 multi-fact star schema
-DROP TABLE MRE_Scale_DIM_L0;
-DROP TABLE MRE_Feature_Cat_DIM_L0;
-DROP TABLE MRE_Property_DIM_L0;
-DROP TABLE MRE_Property_Feature_Bridge_L0;
-DROP TABLE MRE_Feature_DIM_L0;
-DROP TABLE MRE_Wishlist_DIM_L0;
-DROP TABLE MRE_Property_Type_DIM_L0;
-DROP TABLE MRE_Address_DIM_L0;
-DROP TABLE MRE_Postcode_DIM_L0;
-DROP TABLE MRE_State_DIM_L0;
-DROP TABLE MRE_Advertisement_DIM_L0;
-DROP TABLE MRE_Person_DIM_L0;
-DROP TABLE MRE_Agent_Office_DIM_L0;
-DROP TABLE MRE_Office_DIM_L0;
-DROP TABLE MRE_Budget_DIM_L0;
-DROP TABLE MRE_Rent_Price_DIM_L0;
-DROP TABLE MRE_Season_DIM_L0;
-DROP TABLE MRE_Time_DIM_L0;
+DROP TABLE MRE_Scale_DIM_lo PURGE;
+DROP TABLE MRE_Feature_Cat_DIM_lo PURGE;
+DROP TABLE MRE_Property_DIM_lo PURGE;
+DROP TABLE MRE_Property_Feature_Bridge_lo PURGE;
+DROP TABLE MRE_Feature_DIM_lo PURGE;
+DROP TABLE MRE_MRE_Wishlist_DIM_L0 PURGE;
+DROP TABLE MRE_Property_Type_DIM_lo PURGE;
+DROP TABLE MRE_Address_DIM_lo PURGE;
+DROP TABLE MRE_Postcode_DIM_lo PURGE;
+DROP TABLE MRE_State_DIM_lo PURGE;
+DROP TABLE MRE_Advertisement_DIM_lo PURGE;
+DROP TABLE MRE_Person_DIM_lo PURGE;
+DROP TABLE MRE_Agent_Office_DIM_lo PURGE;
+DROP TABLE MRE_Office_DIM_lo PURGE;
+DROP TABLE MRE_Budget_DIM_lo PURGE;
+DROP TABLE MRE_Rental_Peroid_DIM_lo PURGE;
+DROP TABLE MRE_Rent_Price_DIM_lo PURGE;
+DROP TABLE MRE_Season_DIM_lo PURGE;
+DROP TABLE MRE_Time_DIM_lo PURGE;
+DROP TABLE MRE_Sale_FACT_lo PURGE;
+DROP TABLE MRE_Rent_TempFACT_lo PURGE;
+DROP TABLE MRE_Rent_FACT_lo PURGE;
+DROP TABLE MRE_Client_TempFACT_lo PURGE;
+DROP TABLE MRE_Client_FACT_lo PURGE;
+DROP TABLE MRE_Agent_FACT_lo PURGE;
+DROP TABLE MRE_Visit_TempFACT_lo PURGE;
+DROP TABLE MRE_Visit_FACT_lo PURGE;
+DROP TABLE MRE_Advert_FACT_lo PURGE;
 
 --------------------------------
 -- Implement dimension tables --
@@ -227,7 +237,7 @@ CREATE TABLE MRE_Sale_FACT_L0 AS (
 );           
 
 -- MRE_Rent_FACT_L0
-CREATE TABLE MRE_Rent_TempFACT AS (
+CREATE TABLE MRE_Rent_TempFACT_L0 AS (
     SELECT
         r.Agent_Person_ID,
         r.Client_Person_ID,
@@ -295,7 +305,7 @@ CREATE TABLE MRE_Rent_FACT_L0 AS (
 );   
 
 -- MRE_Client_FACT_L0
-CREATE TABLE MRE_Client_TempFACT AS (
+CREATE TABLE MRE_Client_TempFACT_L0 AS (
     SELECT 
         Person_ID AS Client_Person_ID,
         Max_Budget,
@@ -332,7 +342,7 @@ CREATE TABLE MRE_Agent_FACT_L0 AS (
 );
 
 -- MRE_Visit_FACT_L0
-CREATE TABLE MRE_Visit_TempFACT AS (
+CREATE TABLE MRE_Visit_TempFACT_L0 AS (
     SELECT DISTINCT 
         Client_Person_ID,
         Agent_Person_ID,
