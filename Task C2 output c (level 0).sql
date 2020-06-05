@@ -154,7 +154,7 @@ INSERT INTO MRE_Budget_DIM_L0 VALUES (3, 'Medium [1,001 to 100,000]', 1001, 1000
 INSERT INTO MRE_Budget_DIM_L0 VALUES (5, 'High [100,001 to 10,000,000]', 100001, 10000000);    
 
 -- MRE_Rental_Period_DIM_L0
-CREATE TABLE Rental_Period_DIM_L0 (
+CREATE TABLE MRE_Rental_Period_DIM_L0 (
     Rental_Period_ID NUMBER,
     Rental_Period_Description VARCHAR2(60)
 );
@@ -259,13 +259,13 @@ CREATE TABLE MRE_Rent_TempFACT_L0 AS (
              p.Property_No_of_Bedrooms, r.Price, TO_NUMBER(TO_CHAR(Rent_End_Date, 'WW')) - TO_NUMBER(TO_CHAR(Rent_Start_Date, 'WW'))
 );
 
-ALTER TABLE MRE_Rent_TempFACT 
+ALTER TABLE MRE_Rent_TempFACT_L0 
 ADD (Rental_Period_ID NUMBER,
      Scale_ID NUMBER,
      Feature_Cat_ID NUMBER,
      Total_Rent_Fee NUMBER);
      
-UPDATE MRE_Rent_TempFACT
+UPDATE MRE_Rent_TempFACT_L0
 SET Rental_Period_ID = 
         (CASE
             WHEN MONTHS_BETWEEN(Rent_Start_Date, Rent_End_Date) < 6 THEN 1
@@ -301,7 +301,7 @@ CREATE TABLE MRE_Rent_FACT_L0 AS (
         Feature_Cat_ID,
         Total_Rent_Fee,
         Number_of_Rent
-    FROM MRE_Rent_TempFACT   
+    FROM MRE_Rent_TempFACT_L0
 );   
 
 -- MRE_Client_FACT_L0
@@ -310,14 +310,14 @@ CREATE TABLE MRE_Client_TempFACT_L0 AS (
         Person_ID AS Client_Person_ID,
         Max_Budget,
         COUNT(Person_ID) AS Number_of_Clients
-    FROM Client_DIM_L0
+    FROM MRE_Client
     GROUP BY Person_ID, Min_Budget, Max_Budget
 );
 
-ALTER TABLE MRE_Client_TempFACT
+ALTER TABLE MRE_Client_TempFACT_L0
 ADD Budget_ID VARCHAR2(2);
 
-UPDATE MRE_Client_TempFACT
+UPDATE MRE_Client_TempFACT_L0
 SET Budget_ID = 
     (CASE
         WHEN Max_Budget >= 0 AND Max_Budget <= 1000 THEN 1
@@ -330,7 +330,7 @@ CREATE TABLE MRE_Client_FACT_L0 AS (
         Client_Person_ID,
         Budget_ID,
         Number_of_Clients
-    FROM MRE_Client_TempFACT
+    FROM MRE_Client_TempFACT_L0
 );    
 
 -- MRE_Agent_FACT_L0
@@ -353,10 +353,10 @@ CREATE TABLE MRE_Visit_TempFACT_L0 AS (
     GROUP BY Client_Person_ID, Agent_Person_ID, Property_ID, Visit_Date
 );
 
-ALTER TABLE MRE_Visit_TempFACT 
+ALTER TABLE MRE_Visit_TempFACT_L0
 ADD Visit_Time_ID VARCHAR2(5);
 
-UPDATE MRE_Visit_TempFACT
+UPDATE MRE_Visit_TempFACT_L0
 SET Visit_Time_ID = TO_CHAR(Visit_Date, 'MMDY');
 
 CREATE TABLE MRE_Visit_FACT_L0 AS (

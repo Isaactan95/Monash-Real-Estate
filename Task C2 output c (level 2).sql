@@ -38,20 +38,20 @@ create table mre_scale_dim_l2 (
     scale_id numeric(1),
     scale_description char(20));
 
-insert into temp_scale_dim values(1, 'extra small');
-insert into temp_scale_dim values(2, 'small');
-insert into temp_scale_dim values(3, 'medium');
-insert into temp_scale_dim values(4, 'large');
-insert into temp_scale_dim values(5, 'extra large');
+insert into mre_scale_dim_l2 values(1, 'extra small');
+insert into mre_scale_dim_l2 values(2, 'small');
+insert into mre_scale_dim_l2 values(3, 'medium');
+insert into mre_scale_dim_l2 values(4, 'large');
+insert into mre_scale_dim_l2 values(5, 'extra large');
 
 -- Feature catagory dimension
 create table mre_feature_cat_dim_l2(
     feature_cat_id numeric(1),
     feature_cat_description char(15));
 
-insert into feature_cat_dim_l2 values(1,'basic');
-insert into feature_cat_dim_l2 values(2,'standard');
-insert into feature_cat_dim_l2 values(3,'luxurious');
+insert into mre_feature_cat_dim_l2 values(1,'basic');
+insert into mre_feature_cat_dim_l2 values(2,'standard');
+insert into mre_feature_cat_dim_l2 values(3,'luxurious');
 
 
 -- Property dimension
@@ -76,9 +76,6 @@ create table mre_property_type_dim_l2
         from 
             (select distinct property_type as type_description
                 from mre_property);
-
-    type_id numeric(2),
-    type_description varchar(30));
 
 -- Address dim
 create table mre_address_dim_l2
@@ -115,10 +112,10 @@ create table mre_office_dim_l2
     as select *
         from mre_office;
 
-alter table office_dim_l2
+alter table mre_office_dim_l2
     add office_size char(10);
 
-update office_dim_l2 t
+update mre_office_dim_l2 t
     set office_size = 
         (select case 
                     when count(person_id) < 4 then 'small'
@@ -133,23 +130,23 @@ create table mre_budget_dim_l2(
     budget_id char(2),
     budget_description varchar(100));
 
-insert into budget_dim_l2 values ('l', 'Budget between 0 and 1000');
-insert into budget_dim_l2 values ('m', 'Budget between 1001 and 100000');
-insert into budget_dim_l2 values ('h', 'Budget more than 100001');
+insert into mre_budget_dim_l2 values ('l', 'Budget between 0 and 1000');
+insert into mre_budget_dim_l2 values ('m', 'Budget between 1001 and 100000');
+insert into mre_budget_dim_l2 values ('h', 'Budget more than 100001');
 
 -- Rental period DIM
 create table mre_rental_period_dim_l2(
     rental_period_id numeric(2),
     rental_period_description varchar(50));
 
-insert into rental_period_dim_l2(1, 'short');
-insert into rental_period_dim_l2(2, 'medium');
-insert into rental_period_dim_l2(3, 'long');
+insert into mre_rental_period_dim_l2 values (1, 'short');
+insert into mre_rental_period_dim_l2 values (2, 'medium');
+insert into mre_rental_period_dim_l2 values (3, 'long');
 
 -- whishlist dim
 create table mre_wishlist_dim_l2
     as select distinct * 
-        from mre_clint_wish;
+        from mre_client_wish;
 
 -- Rent price dimension
 create table mre_rent_price_dim_l2
@@ -169,19 +166,19 @@ create table mre_temp_time_dim_l2
                     where rent_end_date is not null
                 );
 
-alter table temp_time_dim 
+alter table mre_temp_time_dim_l2
     add (
         time_id varchar(20),
         Year numeric(4),
         Month numeric(2),
         Season_id numeric(1));       
 
-update temp_time_dim
+update mre_temp_time_dim_l2
     set time_id = to_char(to_date(dates, 'DD/MM/YYYY'), 'YYYYMMDY'),
         year = to_number(to_char(to_date(dates, 'DD/MM/YYYY'), 'YYYY')),
         month = to_number(to_char(to_date(dates, 'DD/MM/YYYY'), 'mm'));
 
-update temp_time_dim
+update mre_temp_time_dim_l2
     set season_id = 
         case
             when month between 3 and 5 then 1
@@ -192,17 +189,17 @@ update temp_time_dim
 
 create table mre_time_dim_l2
     as select time_id, year, month, season_id
-        from temp_time_dim;
+        from mre_temp_time_dim_l2;
 
 -- Season DIM
 create table mre_season_dim_l2(
     season_id numeric(1),
     season_description char(10));
 
-insert into season_dim_l2 values(1, 'Spring');
-insert into season_dim_l2 values(2, 'Summer');
-insert into season_dim_l2 values(3, 'Autumn');
-insert into season_dim_l2 values(4, 'Winter');
+insert into mre_season_dim_l2 values(1, 'Spring');
+insert into mre_season_dim_l2 values(2, 'Summer');
+insert into mre_season_dim_l2 values(3, 'Autumn');
+insert into mre_season_dim_l2 values(4, 'Winter');
 
 -- Fact tables
 -- Agent fact table
@@ -217,10 +214,10 @@ as select a.person_id,(a.salary + nvl(sum(r.price),0) + nvl(sum(s.price),0)) as 
 create table mre_temp_client_l2
     as select max_budget from mre_client;
 
-alter table temp_client_l2 
+alter table mre_temp_client_l2 
     add budget_id char(2);
 
-update temp_client_l2
+update mre_temp_client_l2
     set budget_id = case 
         when max_budget between 0 and 1000 then 'l' 
         when max_budget between 1001 and 100000 then 'm'
@@ -228,7 +225,7 @@ update temp_client_l2
 
 create table mre_client_fact_l2
     as select budget_id , count(*) as total_number_of_client
-        from temp_client_l2
+        from mre_temp_client_l2
             group by budget_id;
 
 -- rent fact
@@ -246,8 +243,6 @@ create table mre_temp_rent_fact_l2
                     and p.property_id = f.property_id
                     and r.rent_start_date is not null;
 
-drop table mre_temp_rent_fact_l2;
-select * from mre_temp_rent_fact_l2;
 alter table mre_temp_rent_fact_l2 add (
     time_id varchar(20),
     scale_id numeric(1),
@@ -277,21 +272,21 @@ create table mre_rent_fact_l2
     as select property_id, time_id, scale_id, feature_cat_id, (price / 7 *(rent_end_date - rent_start_date)) as total_rent_fee, count(*) as number_of_rent
         from mre_temp_rent_fact_l2
             group by property_id, time_id, scale_id, feature_cat_id, (price / 7 *(rent_end_date - rent_start_date));
-select * from mre_rent_fact_l2;
+            
 -- visit fact
 create table mre_temp_visit_l2
     as select visit_date 
         from mre_visit;
 
-alter table temp_visit_l2 
+alter table mre_temp_visit_l2 
     add visit_time_id varchar(20);
 
-update temp_visit_l2
+update mre_temp_visit_l2
     set visit_time_id = to_char(to_date(visit_date, 'DD/MM/YYYY'), 'YYYYMMDY');
 
 create table mre_visit_fact_l2
     as select visit_time_id, count(*) as number_of_visit
-        from temp_visit_l2
+        from mre_temp_visit_l2
             group by visit_time_id;
 
 -- sale fact
@@ -301,18 +296,18 @@ create table mre_temp_sale_fact_l2
             where s.property_id = p.property_id
                 and sale_date is not null;
 
-alter table temp_sale_fact add (
+alter table mre_temp_sale_fact_l2 add (
     type_id numeric(2),
     time_id varchar(20));
 
 set define off;
-update temp_sale_fact
+update mre_temp_sale_fact_l2
     set time_id = to_char(to_date(sale_date, 'DD/MM/YYYY'), 'YYYYMMDY'),
         type_id = 
             case
                 when property_type = 'Townhouse' then 1
                 when property_type = 'Villa' then 2
-                when property_type = 'New House & Land' then 3
+                when property_type = 'New House ' || chr(38) || ' Land' then 3
                 when property_type = 'Studio' then 4
                 when property_type = 'Penthouse' then 5
                 when property_type = 'New Apartments / Off the Plan' then 6
@@ -328,7 +323,7 @@ update temp_sale_fact
 
 create table mre_sale_fact_l2
     as select property_id, time_id, type_id, sum(price) as total_sales_price, count(*) as number_of_sales
-        from temp_sale_fact
+        from mre_temp_sale_fact_l2
             group by property_id, time_id, type_id;
 
 -- Advert fact
@@ -337,13 +332,13 @@ create table mre_temp_advert_l2
         from mre_property_advert a, mre_property p
             where p.property_id = a.property_id;
 
-alter table temp_advert_l2
+alter table mre_temp_advert_l2
     add time_id varchar(20);
 
-update temp_advert_l2
+update mre_temp_advert_l2
     set time_id = to_char(to_date(property_date_added, 'DD/MM/YYYY'), 'YYYYMMDY');
 
 create table mre_advert_fact_l2
     as select time_id, advert_id, count(*) as number_of_adverts
-        from temp_advert_l2
+        from mre_temp_advert_l2
             group by time_id, advert_id;
