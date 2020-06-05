@@ -233,7 +233,12 @@ create table mre_client_fact_l2
 
 -- rent fact
 create table mre_temp_rent_fact_l2
-    as select distinct r.property_id , r.rent_start_date as dates, p.property_no_of_bedrooms, f.feature_code, r.price
+    as select distinct 
+        r.property_id , r.rent_start_date as dates, 
+        p.property_no_of_bedrooms, 
+        f.feature_code, 
+        r.price,
+        to_number(to_char(r.rent_end_date, 'WW')) - to_number(to_char(r.rent_start_date, 'WW')) as weeks
             from mre_rent r, mre_property p, mre_property_feature f
                 where r.property_id = p.property_id
                     and p.property_id = f.property_id
@@ -265,7 +270,7 @@ update temp_rent_fact_l2 t
             where t.property_id = f.property_id);
 
 create table mre_rent_fact_l2
-    as select property_id, time_id, scale_id, feature_cat_id, sum(price) as total_rent_fee, count(*) as number_of_rent
+    as select property_id, time_id, scale_id, feature_cat_id, price * weeks as total_rent_fee, count(*) as number_of_rent
         from temp_rent_fact_l2
             group by property_id, time_id, scale_id, feature_cat_id;
 
