@@ -238,18 +238,22 @@ create table mre_temp_rent_fact_l2
         p.property_no_of_bedrooms, 
         f.feature_code, 
         r.price,
-        to_number(to_char(r.rent_end_date, 'WW')) - to_number(to_char(r.rent_start_date, 'WW')) as weeks
+        r.rent_end_date,
+        r.rent_start_date
+        --to_number(to_char(r.rent_end_date, 'WW')) - to_number(to_char(r.rent_start_date, 'WW')) as weeks
             from mre_rent r, mre_property p, mre_property_feature f
                 where r.property_id = p.property_id
                     and p.property_id = f.property_id
                     and r.rent_start_date is not null;
 
-alter table temp_rent_fact_l2 add (
+drop table mre_temp_rent_fact_l2;
+select * from mre_temp_rent_fact_l2;
+alter table mre_temp_rent_fact_l2 add (
     time_id varchar(20),
     scale_id numeric(1),
     feature_cat_id numeric(1));
 
-update temp_rent_fact_l2
+update mre_temp_rent_fact_l2
     set time_id = to_char(to_date(dates, 'DD/MM/YYYY'), 'YYYYMMDY'),
         scale_id =
             case 
@@ -260,7 +264,7 @@ update temp_rent_fact_l2
                 else 5
             end;
             
-update temp_rent_fact_l2 t
+update mre_temp_rent_fact_l2 t
        set feature_cat_id = 
         (select case when count(property_id) < 10 then 1
                     when count(property_id) between 10 and 20 then 2
@@ -270,10 +274,10 @@ update temp_rent_fact_l2 t
             where t.property_id = f.property_id);
 
 create table mre_rent_fact_l2
-    as select property_id, time_id, scale_id, feature_cat_id, price * weeks as total_rent_fee, count(*) as number_of_rent
-        from temp_rent_fact_l2
-            group by property_id, time_id, scale_id, feature_cat_id;
-
+    as select property_id, time_id, scale_id, feature_cat_id, (price / 7 *(rent_end_date - rent_start_date)) as total_rent_fee, count(*) as number_of_rent
+        from mre_temp_rent_fact_l2
+            group by property_id, time_id, scale_id, feature_cat_id, (price / 7 *(rent_end_date - rent_start_date));
+select * from mre_rent_fact_l2;
 -- visit fact
 create table mre_temp_visit_l2
     as select visit_date 
