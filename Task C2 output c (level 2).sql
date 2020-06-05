@@ -1,34 +1,40 @@
 -- Task c 2b)
 -- Level 2 multi-fact star schema
-drop table mre_agent_fact_l2;
-drop table agent_office_dim_l2;
-drop table office_dim_l2;
-drop table person_dim_l2;
-drop table wishlist_dim_l2;
-drop table address_dim_l2;
-drop table postcode_dim_l2;
-drop table state_dim_l2;
-drop table mre_client_fact_l2;
-drop table budget_dim_l2;
-drop table mre_rent_fact_l2;
-drop table scale_dim_l2;
-drop table feature_cat_dim_l2;
-drop table rent_price_dim_l2;
-drop table time_dim_l2;
-drop table season_dim_l2;
-drop table visit_fact_l2;
-drop table mre_sale_fact_l2;
-drop table property_dim_l2;
-drop table property_feature_bridge_l2;
-drop table feature_dim_l2;
-drop table property_type_dim_l2;
-drop table mre_advert_fact_l2;
-drop table advertisement_dim_l2;
-drop table rental_period_dim_l2;
+DROP TABLE MRE_scale_DIM_l2 PURGE;
+DROP TABLE MRE_feature_cat_DIM_l2 PURGE;
+DROP TABLE MRE_property_dim_l2 PURGE;
+DROP TABLE MRE_property_feature_bridge_l2 PURGE;
+DROP TABLE MRE_feature_dim_l2 PURGE;
+DROP TABLE MRE_property_type_dim_l2 PURGE;
+DROP TABLE MRE_address_dim_l2 PURGE;
+DROP TABLE MRE_postcode_dim_l2 PURGE;
+DROP TABLE MRE_state_dim_l2 PURGE;
+DROP TABLE MRE_advertisement_dim_l2 PURGE;
+DROP TABLE MRE_person_dim_l2 PURGE;
+DROP TABLE MRE_agent_office_dim_l2 PURGE;
+DROP TABLE MRE_office_dim_l2 PURGE;
+DROP TABLE MRE_budget_dim_l2 PURGE;
+DROP TABLE MRE_rental_period_dim_l2 PURGE;
+DROP TABLE MRE_wishlist_dim_l2 PURGE;
+DROP TABLE MRE_rent_price_dim_l2 PURGE;
+DROP TABLE MRE_temp_time_dim_l2 PURGE;
+DROP TABLE MRE_time_dim_l2 PURGE;
+DROP TABLE MRE_season_dim_l2 PURGE;
+DROP TABLE MRE_agent_fact_l2 PURGE;
+DROP TABLE MRE_temp_client_l2 PURGE;
+DROP TABLE MRE_client_fact_l2 PURGE;
+DROP TABLE MRE_temp_rent_fact_l2 PURGE;
+DROP TABLE MRE_rent_fact_l2 PURGE;
+DROP TABLE MRE_temp_visit_l2 PURGE;
+DROP TABLE MRE_visit_fact_l2 PURGE;
+DROP TABLE MRE_temp_sale_fact_l2 PURGE;
+DROP TABLE MRE_sale_fact_l2 PURGE;
+DROP TABLE MRE_temp_advert_l2 PURGE;
+DROP TABLE MRE_advert_fact_l2 PURGE;
 
 -- Dimension tables
 -- Scale dimension
-create table scale_dim_l2 (
+create table mre_scale_dim_l2 (
     scale_id numeric(1),
     scale_description char(20));
 
@@ -39,7 +45,7 @@ insert into temp_scale_dim values(4, 'large');
 insert into temp_scale_dim values(5, 'extra large');
 
 -- Feature catagory dimension
-create table feature_cat_dim_l2(
+create table mre_feature_cat_dim_l2(
     feature_cat_id numeric(1),
     feature_cat_description char(15));
 
@@ -49,23 +55,23 @@ insert into feature_cat_dim_l2 values(3,'luxurious');
 
 
 -- Property dimension
-create table property_dim_l2
+create table mre_property_dim_l2
     as select property_id, address_id
         from mre_property;
 
 -- Property feature bridge
-create table property_feature_bridge_l2
+create table mre_property_feature_bridge_l2
     as select distinct * 
         from mre_property_feature;
 
  
 -- feature dim
-create table feature_dim_l2
+create table mre_feature_dim_l2
     as select distinct *
         from mre_feature;
 
 -- property type dimension
-create table property_type_dim_l2 
+create table mre_property_type_dim_l2 
     as select row_number() over(order by 1) as type_id, type_description
         from 
             (select distinct property_type as type_description
@@ -75,37 +81,37 @@ create table property_type_dim_l2
     type_description varchar(30));
 
 -- Address dim
-create table address_dim_l2
+create table mre_address_dim_l2
     as select distinct address_id, suburb, postcode
         from mre_address;
 
 -- postcode dim
-create table postcode_dim_l2
+create table mre_postcode_dim_l2
     as select distinct * 
         from mre_postcode;
 
 -- state dim
-create table state_dim_l2
+create table mre_state_dim_l2
     as select * 
         from mre_state;
 
 -- Advertisment dim
-create table advertisement_dim_l2
+create table mre_advertisement_dim_l2
     as select distinct *
         from mre_advertisement;
 
 -- person dim        
-create table person_dim_l2
+create table mre_person_dim_l2
     as select person_id, first_name, last_name, gender, address_id
         from mre_person;
 
 -- agent office dim
-create table agent_office_dim_l2
+create table mre_agent_office_dim_l2
     as select distinct person_id as agent_person_id, office_id 
         from mre_agent_office;
 
 -- office dim        
-create table office_dim_l2
+create table mre_office_dim_l2
     as select *
         from mre_office;
 
@@ -123,7 +129,7 @@ update office_dim_l2 t
                 where t.office_id = ao.office_id);
 
 -- Budget dimension 
-create table budget_dim_l2(
+create table mre_budget_dim_l2(
     budget_id char(2),
     budget_description varchar(100));
 
@@ -132,7 +138,7 @@ insert into budget_dim_l2 values ('m', 'Budget between 1001 and 100000');
 insert into budget_dim_l2 values ('h', 'Budget more than 100001');
 
 -- Rental period DIM
-create table rental_period_dim_l2(
+create table mre_rental_period_dim_l2(
     rental_period_id numeric(2),
     rental_period_description varchar(50));
 
@@ -141,17 +147,17 @@ insert into rental_period_dim_l2(2, 'medium');
 insert into rental_period_dim_l2(3, 'long');
 
 -- whishlist dim
-create table wishlist_dim_l2
+create table mre_wishlist_dim_l2
     as select distinct * 
         from mre_clint_wish;
 
 -- Rent price dimension
-create table rent_price_dim_l2
+create table mre_rent_price_dim_l2
     as select property_id, rent_start_date, rent_end_date, price
         from mre_rent;
 
 -- Time dimension 
-create table temp_time_dim
+create table mre_temp_time_dim_l2
     as select *
         from (select distinct sale_date as dates from mre_sale
                     where sale_date is not null
@@ -184,12 +190,12 @@ update temp_time_dim
             else 4
         end;
 
-create table time_dim_l2
+create table mre_time_dim_l2
     as select time_id, year, month, season_id
         from temp_time_dim;
 
 -- Season DIM
-create table season_dim_l2(
+create table mre_season_dim_l2(
     season_id numeric(1),
     season_description char(10));
 
@@ -208,7 +214,7 @@ as select a.person_id,(a.salary + nvl(sum(r.price),0) + nvl(sum(s.price),0)) as 
             group by person_id, s.agent_person_id, a.salary, r.agent_person_id;
    
 -- client fact table 
-create table temp_client_l2
+create table mre_temp_client_l2
     as select max_budget from mre_client;
 
 alter table temp_client_l2 
@@ -226,7 +232,7 @@ create table mre_client_fact_l2
             group by budget_id;
 
 -- rent fact
-create table temp_rent_fact_l2
+create table mre_temp_rent_fact_l2
     as select distinct r.property_id , r.rent_start_date as dates, p.property_no_of_bedrooms, f.feature_code, r.price
             from mre_rent r, mre_property p, mre_property_feature f
                 where r.property_id = p.property_id
@@ -264,7 +270,7 @@ create table mre_rent_fact_l2
             group by property_id, time_id, scale_id, feature_cat_id;
 
 -- visit fact
-create table temp_visit_l2
+create table mre_temp_visit_l2
     as select visit_date 
         from mre_visit;
 
@@ -274,13 +280,13 @@ alter table temp_visit_l2
 update temp_visit_l2
     set visit_time_id = to_char(to_date(visit_date, 'DD/MM/YYYY'), 'YYYYMMDY');
 
-create table visit_fact_l2
+create table mre_visit_fact_l2
     as select visit_time_id, count(*) as number_of_visit
         from temp_visit_l2
             group by visit_time_id;
 
 -- sale fact
-create table temp_sale_fact
+create table mre_temp_sale_fact_l2
     as select s.property_id, s.sale_date, p.property_type, s.price
         from mre_sale s, mre_property p
             where s.property_id = p.property_id
@@ -317,7 +323,7 @@ create table mre_sale_fact_l2
             group by property_id, time_id, type_id;
 
 -- Advert fact
-create table temp_advert_l2
+create table mre_temp_advert_l2
     as select distinct a.advert_id, p.property_date_added
         from mre_property_advert a, mre_property p
             where p.property_id = a.property_id;
