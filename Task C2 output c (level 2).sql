@@ -56,7 +56,7 @@ insert into mre_feature_cat_dim_l2 values(3,'luxurious');
 
 -- Property dimension
 create table mre_property_dim_l2
-    as select property_id, address_id
+    as select property_id, address_id, property_type
         from mre_property;
 
 -- Property feature bridge
@@ -72,10 +72,8 @@ create table mre_feature_dim_l2
 
 -- property type dimension
 create table mre_property_type_dim_l2 
-    as select row_number() over(order by 1) as type_id, type_description
-        from 
-            (select distinct property_type as type_description
-                from mre_property);
+    as select distinct(property_type)
+        from mre_property;
 
 -- Address dim
 create table mre_address_dim_l2
@@ -297,34 +295,16 @@ create table mre_temp_sale_fact_l2
                 and sale_date is not null;
 
 alter table mre_temp_sale_fact_l2 add (
-    type_id numeric(2),
     time_id varchar(20));
 
 set define off;
 update mre_temp_sale_fact_l2
-    set time_id = to_char(to_date(sale_date, 'DD/MM/YYYY'), 'YYYYMMDY'),
-        type_id = 
-            case
-                when property_type = 'Townhouse' then 1
-                when property_type = 'Villa' then 2
-                when property_type = 'New House ' || chr(38) || ' Land' then 3
-                when property_type = 'Studio' then 4
-                when property_type = 'Penthouse' then 5
-                when property_type = 'New Apartments / Off the Plan' then 6
-                when property_type = 'Block of Units' then 7
-                when property_type = 'Terrace' then 8
-                when property_type = 'Apartment / Unit / Flat' then 9
-                when property_type = 'Vacant land' then 10
-                when property_type = 'Semi-Detached' then 11
-                when property_type = 'House' then 12
-                when property_type = 'Duplex' then 13
-                else 14
-            end;
+    set time_id = to_char(to_date(sale_date, 'DD/MM/YYYY'), 'YYYYMMDY');
 
 create table mre_sale_fact_l2
-    as select property_id, time_id, type_id, sum(price) as total_sales_price, count(*) as number_of_sales
+    as select property_id, time_id, sum(price) as total_sales_price, count(*) as number_of_sales
         from mre_temp_sale_fact_l2
-            group by property_id, time_id, type_id;
+            group by property_id, time_id;
 
 -- Advert fact
 create table mre_temp_advert_l2

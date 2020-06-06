@@ -61,9 +61,9 @@ CREATE TABLE MRE_Property_DIM_L0 AS (
     SELECT 
         p.Property_ID,
         p.Property_Date_Added,
-        a.Suburb
-    FROM MRE_Property p, MRE_Address a
-    WHERE p.Address_ID = a.Address_ID
+        p.address_id,
+        p.property_type 
+    FROM MRE_Property p
 );    
 
 -- Property_Feature_Bridge_L0
@@ -86,12 +86,8 @@ CREATE TABLE MRE_Wishlist_DIM_L0 AS (
 
 -- MRE_Property_Type_DIM_L0
 CREATE TABLE MRE_Property_Type_DIM_L0 AS (
-    SELECT 
-        ROW_NUMBER() OVER(ORDER BY 1) AS Type_ID,
-        Type_Description
-    FROM (SELECT DISTINCT    
-            Property_Type AS Type_Description
-          FROM MRE_Property)
+    SELECT DISTINCT(property_type)
+        FROM mre_property
 );
 
 -- MRE_Address_DIM_L0
@@ -262,15 +258,13 @@ CREATE TABLE MRE_Sale_FACT_L0 AS (
         s.Client_Person_ID,
         TO_CHAR(s.Sale_Date, 'YYYYMMDy') AS Time_ID,
         s.Property_ID,
-        pt.Type_ID,
         s.Price AS Total_Sales_Price,
         COUNT(s.Sale_ID) AS Number_of_Sales
-    FROM MRE_Sale s, MRE_Property p, MRE_Property_Type_DIM_L0 pt
+    FROM MRE_Sale s, MRE_Property p
     WHERE s.Property_ID = p.Property_ID
     AND s.Client_Person_ID IS NOT NULL
     AND s.Sale_Date IS NOT NULL
-    AND pt.Type_Description = p.Property_Type
-    GROUP BY s.Agent_Person_ID, s.Client_Person_ID, TO_CHAR(s.Sale_Date, 'YYYYMMDy'), s.Property_ID, pt.Type_ID, s.Price
+    GROUP BY s.Agent_Person_ID, s.Client_Person_ID, TO_CHAR(s.Sale_Date, 'YYYYMMDy'), s.Property_ID, s.Price
 );           
 
 -- MRE_Rent_FACT_L0
