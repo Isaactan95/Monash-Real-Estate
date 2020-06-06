@@ -256,7 +256,7 @@ CREATE TABLE MRE_Sale_FACT_L0 AS (
     SELECT 
         s.Agent_Person_ID,
         s.Client_Person_ID,
-        TO_CHAR(s.Sale_Date, 'YYYYMMDy') AS Time_ID,
+        TO_CHAR(s.Sale_Date, 'YYYYMMDY') AS Time_ID,
         s.Property_ID,
         s.Price AS Total_Sales_Price,
         COUNT(s.Sale_ID) AS Number_of_Sales
@@ -264,7 +264,7 @@ CREATE TABLE MRE_Sale_FACT_L0 AS (
     WHERE s.Property_ID = p.Property_ID
     AND s.Client_Person_ID IS NOT NULL
     AND s.Sale_Date IS NOT NULL
-    GROUP BY s.Agent_Person_ID, s.Client_Person_ID, TO_CHAR(s.Sale_Date, 'YYYYMMDy'), s.Property_ID, s.Price
+    GROUP BY s.Agent_Person_ID, s.Client_Person_ID, TO_CHAR(s.Sale_Date, 'YYYYMMDY'), s.Property_ID, s.Price
 );           
 
 -- MRE_Rent_FACT_L0
@@ -322,8 +322,8 @@ CREATE TABLE MRE_Rent_FACT_L0 AS (
         Agent_Person_ID,
         Client_Person_ID,
         Property_ID,
-        Rent_Start_Date,
-        Rent_End_Date,
+        to_char(Rent_Start_Date, 'YYYYMMDY') as rent_start_date,
+        to_char(Rent_End_Date, 'YYYYMMDY') as rent_end_date,
         Rental_Period_ID,
         Scale_ID,
         Feature_Cat_ID,

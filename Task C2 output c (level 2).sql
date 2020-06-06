@@ -186,7 +186,7 @@ update mre_temp_time_dim_l2
         end;
 
 create table mre_time_dim_l2
-    as select time_id, year, month, season_id
+    as select DISTINCT(time_id), year, month, season_id
         from mre_temp_time_dim_l2;
 
 -- Season DIM
@@ -229,17 +229,19 @@ create table mre_client_fact_l2
 -- rent fact
 create table mre_temp_rent_fact_l2
     as select distinct 
-        r.property_id , r.rent_start_date as dates, 
+        r.property_id ,
+        r.rent_start_date as dates, 
         p.property_no_of_bedrooms, 
-        f.feature_code, 
+        COUNT(*) as number_of_features, 
         r.price,
         r.rent_end_date,
-        r.rent_start_date
-        --to_number(to_char(r.rent_end_date, 'WW')) - to_number(to_char(r.rent_start_date, 'WW')) as weeks
+        r.rent_start_date,
+        count(distinct(rent_id)) as num_of_rent
             from mre_rent r, mre_property p, mre_property_feature f
                 where r.property_id = p.property_id
                     and p.property_id = f.property_id
-                    and r.rent_start_date is not null;
+                    and r.rent_start_date is not null
+                        GROUP BY r.property_id, p.property_no_of_bedrooms, r.price, r.rent_end_date, r.rent_start_date;
 
 alter table mre_temp_rent_fact_l2 add (
     time_id varchar(20),
@@ -247,7 +249,7 @@ alter table mre_temp_rent_fact_l2 add (
     feature_cat_id numeric(1));
 
 update mre_temp_rent_fact_l2
-    set time_id = to_char(to_date(dates, 'DD/MM/YYYY'), 'YYYYMMDY'),
+    set time_id = to_char(to_date(rent_start_date, 'DD/MM/YYYY'), 'YYYYMMDY'),
         scale_id =
             case 
                 when property_no_of_bedrooms between 0 and 1 then 1
@@ -259,17 +261,14 @@ update mre_temp_rent_fact_l2
             
 update mre_temp_rent_fact_l2 t
        set feature_cat_id = 
-        (select case when count(property_id) < 10 then 1
-                    when count(property_id) between 10 and 20 then 2
+        (case when number_of_features < 10 then 1
+                    when number_of_features between 10 and 20 then 2
                     else 3
-                end
-            from mre_property_feature f
-            where t.property_id = f.property_id);
+                end);
 
 create table mre_rent_fact_l2
-    as select property_id, time_id, scale_id, feature_cat_id, (price / 7 *(rent_end_date - rent_start_date)) as total_rent_fee, count(*) as number_of_rent
-        from mre_temp_rent_fact_l2
-            group by property_id, time_id, scale_id, feature_cat_id, (price / 7 *(rent_end_date - rent_start_date));
+    as select property_id, time_id, scale_id, feature_cat_id, (price / 7 *(rent_end_date - rent_start_date)) as total_rent_fee, num_of_rent as number_of_rent
+        from mre_temp_rent_fact_l2;
             
 -- visit fact
 create table mre_temp_visit_l2
