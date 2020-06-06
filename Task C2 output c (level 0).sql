@@ -1,23 +1,35 @@
 -- Task C 2b)
 -- Level 0 multi-fact star schema
-DROP TABLE MRE_Scale_DIM_L0;
-DROP TABLE MRE_Feature_Cat_DIM_L0;
-DROP TABLE MRE_Property_DIM_L0;
-DROP TABLE MRE_Property_Feature_Bridge_L0;
-DROP TABLE MRE_Feature_DIM_L0;
-DROP TABLE MRE_Wishlist_DIM_L0;
-DROP TABLE MRE_Property_Type_DIM_L0;
-DROP TABLE MRE_Address_DIM_L0;
-DROP TABLE MRE_Postcode_DIM_L0;
-DROP TABLE MRE_State_DIM_L0;
-DROP TABLE MRE_Advertisement_DIM_L0;
-DROP TABLE MRE_Person_DIM_L0;
-DROP TABLE MRE_Agent_Office_DIM_L0;
-DROP TABLE MRE_Office_DIM_L0;
-DROP TABLE MRE_Budget_DIM_L0;
-DROP TABLE MRE_Rent_Price_DIM_L0;
-DROP TABLE MRE_Season_DIM_L0;
-DROP TABLE MRE_Time_DIM_L0;
+DROP TABLE MRE_Scale_DIM_l0 PURGE;
+DROP TABLE MRE_Feature_Cat_DIM_l0 PURGE;
+DROP TABLE MRE_Property_DIM_l0 PURGE;
+DROP TABLE MRE_Property_Feature_Bridge_l0 PURGE;
+DROP TABLE MRE_Feature_DIM_l0 PURGE;
+DROP TABLE MRE_Wishlist_DIM_L0 PURGE;
+DROP TABLE MRE_Property_Type_DIM_l0 PURGE;
+DROP TABLE MRE_Address_DIM_l0 PURGE;
+DROP TABLE MRE_Postcode_DIM_l0 PURGE;
+DROP TABLE MRE_State_DIM_l0 PURGE;
+DROP TABLE MRE_Advertisement_DIM_l0 PURGE;
+DROP TABLE MRE_Person_DIM_l0 PURGE;
+DROP TABLE MRE_Agent_Office_DIM_l0 PURGE;
+DROP TABLE MRE_Office_DIM_l0 PURGE;
+DROP TABLE MRE_Office_Size_DIM_L0 PURGE;
+DROP TABLE MRE_Office_TempDIM_L0 PURGE;
+DROP TABLE MRE_Budget_DIM_l0 PURGE;
+DROP TABLE MRE_Rental_Period_DIM_l0 PURGE;
+DROP TABLE MRE_Rent_Price_DIM_l0 PURGE;
+DROP TABLE MRE_Season_DIM_l0 PURGE;
+DROP TABLE MRE_Time_DIM_l0 PURGE;
+DROP TABLE MRE_Sale_FACT_l0 PURGE;
+DROP TABLE MRE_Rent_TempFACT_L0 PURGE;
+DROP TABLE MRE_Rent_FACT_l0 PURGE;
+DROP TABLE MRE_Client_TempFACT_L0 PURGE;
+DROP TABLE MRE_Client_FACT_l0 PURGE;
+DROP TABLE MRE_Agent_FACT_l0 PURGE;
+DROP TABLE MRE_Visit_FACT_l0 PURGE;
+DROP TABLE MRE_Advert_FACT_l0 PURGE;
+
 
 --------------------------------
 -- Implement dimension tables --
@@ -55,7 +67,7 @@ CREATE TABLE MRE_Property_DIM_L0 AS (
 );    
 
 -- Property_Feature_Bridge_L0
-CREATE TABLE Property_Feature_Bridge_L0 AS (
+CREATE TABLE MRE_Property_Feature_Bridge_L0 AS (
     SELECT DISTINCT * FROM MRE_Property_Feature
 );
 
@@ -262,7 +274,7 @@ CREATE TABLE MRE_Sale_FACT_L0 AS (
 );           
 
 -- MRE_Rent_FACT_L0
-CREATE TABLE MRE_Rent_TempFACT AS (
+CREATE TABLE MRE_Rent_TempFACT_L0 AS (
     SELECT
         r.Agent_Person_ID,
         r.Client_Person_ID,
@@ -283,12 +295,12 @@ CREATE TABLE MRE_Rent_TempFACT AS (
              p.Property_No_of_Bedrooms, ROUND((r.Price / 7) * (Rent_End_Date - Rent_Start_Date), 2)
 );
 
-ALTER TABLE MRE_Rent_TempFACT 
+ALTER TABLE MRE_Rent_TempFACT_L0
 ADD (Rental_Period_ID NUMBER,
      Scale_ID NUMBER,
      Feature_Cat_ID NUMBER);
      
-UPDATE MRE_Rent_TempFACT
+UPDATE MRE_Rent_TempFACT_L0
 SET Rental_Period_ID = 
         (CASE
             WHEN MONTHS_BETWEEN(Rent_Start_Date, Rent_End_Date) < 6 THEN 1
@@ -323,11 +335,11 @@ CREATE TABLE MRE_Rent_FACT_L0 AS (
         Feature_Cat_ID,
         Total_Rent_Fee,
         Number_of_Rent
-    FROM MRE_Rent_TempFACT   
+    FROM MRE_Rent_TempFACT_L0 
 );   
 
 -- MRE_Client_FACT_L0
-CREATE TABLE MRE_Client_TempFACT AS (
+CREATE TABLE MRE_Client_TempFACT_L0 AS (
     SELECT 
         Person_ID AS Client_Person_ID,
         Max_Budget,
@@ -336,10 +348,10 @@ CREATE TABLE MRE_Client_TempFACT AS (
     GROUP BY Person_ID, Min_Budget, Max_Budget
 );
 
-ALTER TABLE MRE_Client_TempFACT
+ALTER TABLE MRE_Client_TempFACT_L0
 ADD Budget_ID VARCHAR2(2);
 
-UPDATE MRE_Client_TempFACT
+UPDATE MRE_Client_TempFACT_L0
 SET Budget_ID = 
     (CASE
         WHEN Max_Budget >= 0 AND Max_Budget <= 1000 THEN 1
@@ -352,20 +364,17 @@ CREATE TABLE MRE_Client_FACT_L0 AS (
         Client_Person_ID,
         Budget_ID,
         Number_of_Clients
-    FROM MRE_Client_TempFACT
+    FROM MRE_Client_TempFACT_L0
 );    
 
 -- MRE_Agent_FACT_L0
 CREATE TABLE MRE_Agent_FACT_L0 AS (
     SELECT * FROM 
-    (SELECT 
-        a.Person_ID AS Agent_Person_ID,
-        SUM(rf.Total_Rent_Fee + sf.Total_Sales_Price) AS Total_Earnings
-    FROM MRE_Agent a, MRE_Rent_FACT_L0 rf, MRE_Sale_FACT_L0 sf
-    WHERE a.Person_ID = rf.Agent_Person_ID
-    OR a.Person_ID = sf.Agent_Person_ID
-    GROUP BY a.Person_ID
-    ORDER BY a.Person_ID)
+    (SELECT a.person_id as agent_person_id, SUM(nvl(s.price, 0)) + nvl(SUM(nvl(r.price, 0)/7*(r.rent_end_date - r.rent_start_date)), 0) as total_earnings
+    FROM mre_agent a, mre_sale s, mre_rent r
+        WHERE a.person_id = s.agent_person_id (+)
+        AND a.person_id = r.agent_person_id (+)
+            GROUP BY a.person_id)
 );
 
 -- MRE_Visit_FACT_L0
@@ -430,7 +439,7 @@ SELECT SUM(Number_of_Visits) FROM MRE_Visit_FACT_L0; -- 575
 SELECT Client_Person_ID, SUM(Number_of_Visits) FROM MRE_Visit_FACT_L0 GROUP BY Client_Person_ID ORDER BY Client_Person_ID; -- 575
 SELECT Agent_Person_ID, SUM(Number_of_Visits) FROM MRE_Visit_FACT_L0 GROUP BY Agent_Person_ID ORDER BY Agent_Person_ID; -- 575
 SELECT Property_ID, SUM(Number_of_Visits) FROM MRE_Visit_FACT_L0 GROUP BY Property_ID ORDER BY Property_ID; -- 575
-SELECT Visit_Time_ID, SUM(Number_of_Visits) FROM MRE_Visit_FACT_L0 GROUP BY Visit_Time_ID ORDER BY Visit_Time_ID; -- 575
+SELECT Time_ID, SUM(Number_of_Visits) FROM MRE_Visit_FACT_L0 GROUP BY Time_ID ORDER BY Time_ID; -- 575
 
 -- MRE_Advert_FACT_L0
 SELECT SUM(Number_of_Adverts) FROM MRE_Advert_FACT_L0; -- 3646

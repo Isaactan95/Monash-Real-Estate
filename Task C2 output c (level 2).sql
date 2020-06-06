@@ -204,11 +204,11 @@ insert into mre_season_dim_l2 values(4, 'Winter');
 -- Fact tables
 -- Agent fact table
 create table mre_agent_fact_l2
-as select a.person_id,(a.salary + nvl(sum(r.price),0) + nvl(sum(s.price),0)) as total_earnings
-        from mre_sale s , mre_agent a, mre_rent r
-            where a.person_id = s.agent_person_id (+)
-                and a.person_id = r.agent_person_id(+)
-            group by person_id, s.agent_person_id, a.salary, r.agent_person_id;
+as select a.person_id as agent_person_id, sum(nvl(s.price, 0)) + nvl(sum(nvl(r.price, 0)/7*(r.rent_end_date - r.rent_start_date)), 0) as total_earnings
+    from mre_agent a, mre_sale s, mre_rent r
+        where a.person_id = s.agent_person_id (+)
+        and a.person_id = r.agent_person_id (+)
+            group by a.person_id;
    
 -- client fact table 
 create table mre_temp_client_l2

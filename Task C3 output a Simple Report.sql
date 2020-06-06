@@ -10,7 +10,8 @@ SELECT 	s.scale_description as Scale,
 		AND f.property_id = p.property_id
 		AND p.address_id = a.address_id
         AND ROWNUM <= 16
-			GROUP BY s.scale_description, a.suburb;
+			GROUP BY s.scale_description, a.suburb
+                ORDER BY ROW_NUMBER() OVER(ORDER BY SUM(f.number_of_rent) DESC) ASC;
 
 
 --Report 2
