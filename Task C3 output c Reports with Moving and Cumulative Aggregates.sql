@@ -21,7 +21,8 @@ UNION
         AND sf.time_id = t.time_id
         AND b.budget_description LIKE 'High%'
             GROUP BY t.year))
-                GROUP BY year;
+                GROUP BY year
+                    ORDER BY year;
 
 --Report 9
 SELECT  t.year,
@@ -30,7 +31,8 @@ SELECT  t.year,
         to_char(AVG(SUM(f.number_of_visit)) OVER (ORDER BY t.year, t.month ROWS 2 PRECEDING), '99') as Average_3_Month_Visits
     FROM mre_visit_fact_l2 f, mre_time_dim_l2 t
         WHERE f.visit_time_id =t.time_id
-            GROUP BY t.year, t.month, number_of_visit;
+            GROUP BY t.year, t.month, number_of_visit
+                ORDER BY year, month +0;
 
 --Report 10
 SELECT  t.year as Year,
@@ -39,4 +41,5 @@ SELECT  t.year as Year,
         SUM(SUM(number_of_rent)) OVER (ORDER BY t.year, t.month ROWS UNBOUNDED PRECEDING) as Cumulative_Number_of_Rent
     FROM mre_rent_fact_l2 f, mre_time_dim_l2 t
         WHERE f.time_id = t.time_id
-            GROUP BY t.year, t.month;
+            GROUP BY t.year, t.month
+                ORDER BY year, month +0;

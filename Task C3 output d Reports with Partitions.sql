@@ -13,7 +13,8 @@ SELECT  t.year as Year,
         AND p.address_id = a.address_id
         AND a.postcode = pc.postcode
         AND pc.state_code = s.state_code
-            GROUP BY t.year, p.property_type, s.state_name;
+            GROUP BY t.year, p.property_type, s.state_name
+                ORDER BY SUM(f.number_of_sales) DESC;
         
 
 --Report 12
@@ -30,4 +31,5 @@ SELECT  t.year as Year,
         AND a.postcode = pc.postcode
         AND pc.state_code = s.state_code
         AND f.time_id = t.time_id
-            GROUP BY t.year, ad.advert_name, s.state_name;
+            GROUP BY t.year, ad.advert_name, s.state_name
+                ORDER BY SUM(f.number_of_adverts) DESC;
