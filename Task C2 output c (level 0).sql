@@ -1,33 +1,23 @@
-    -- Task C 2b)
+-- Task C 2b)
 -- Level 0 multi-fact star schema
-DROP TABLE MRE_Scale_DIM_lo PURGE;
-DROP TABLE MRE_Feature_Cat_DIM_lo PURGE;
-DROP TABLE MRE_Property_DIM_lo PURGE;
-DROP TABLE MRE_Property_Feature_Bridge_lo PURGE;
-DROP TABLE MRE_Feature_DIM_lo PURGE;
-DROP TABLE MRE_MRE_Wishlist_DIM_L0 PURGE;
-DROP TABLE MRE_Property_Type_DIM_lo PURGE;
-DROP TABLE MRE_Address_DIM_lo PURGE;
-DROP TABLE MRE_Postcode_DIM_lo PURGE;
-DROP TABLE MRE_State_DIM_lo PURGE;
-DROP TABLE MRE_Advertisement_DIM_lo PURGE;
-DROP TABLE MRE_Person_DIM_lo PURGE;
-DROP TABLE MRE_Agent_Office_DIM_lo PURGE;
-DROP TABLE MRE_Office_DIM_lo PURGE;
-DROP TABLE MRE_Budget_DIM_lo PURGE;
-DROP TABLE MRE_Rental_Peroid_DIM_lo PURGE;
-DROP TABLE MRE_Rent_Price_DIM_lo PURGE;
-DROP TABLE MRE_Season_DIM_lo PURGE;
-DROP TABLE MRE_Time_DIM_lo PURGE;
-DROP TABLE MRE_Sale_FACT_lo PURGE;
-DROP TABLE MRE_Rent_TempFACT_lo PURGE;
-DROP TABLE MRE_Rent_FACT_lo PURGE;
-DROP TABLE MRE_Client_TempFACT_lo PURGE;
-DROP TABLE MRE_Client_FACT_lo PURGE;
-DROP TABLE MRE_Agent_FACT_lo PURGE;
-DROP TABLE MRE_Visit_TempFACT_lo PURGE;
-DROP TABLE MRE_Visit_FACT_lo PURGE;
-DROP TABLE MRE_Advert_FACT_lo PURGE;
+DROP TABLE MRE_Scale_DIM_L0;
+DROP TABLE MRE_Feature_Cat_DIM_L0;
+DROP TABLE MRE_Property_DIM_L0;
+DROP TABLE MRE_Property_Feature_Bridge_L0;
+DROP TABLE MRE_Feature_DIM_L0;
+DROP TABLE MRE_Wishlist_DIM_L0;
+DROP TABLE MRE_Property_Type_DIM_L0;
+DROP TABLE MRE_Address_DIM_L0;
+DROP TABLE MRE_Postcode_DIM_L0;
+DROP TABLE MRE_State_DIM_L0;
+DROP TABLE MRE_Advertisement_DIM_L0;
+DROP TABLE MRE_Person_DIM_L0;
+DROP TABLE MRE_Agent_Office_DIM_L0;
+DROP TABLE MRE_Office_DIM_L0;
+DROP TABLE MRE_Budget_DIM_L0;
+DROP TABLE MRE_Rent_Price_DIM_L0;
+DROP TABLE MRE_Season_DIM_L0;
+DROP TABLE MRE_Time_DIM_L0;
 
 --------------------------------
 -- Implement dimension tables --
@@ -136,10 +126,45 @@ CREATE TABLE MRE_Agent_Office_DIM_L0 AS (
     FROM MRE_Agent_Office
 );
 
--- MRE_Office_DIM_L0
-CREATE TABLE MRE_Office_DIM_L0 AS (
-    SELECT DISTINCT * FROM MRE_Office
+-- MRE_Office_Size_DIM_L0
+CREATE TABLE MRE_Office_Size_DIM_L0 (
+    Office_Size_ID NUMBER,
+    Office_Size_Description VARCHAR2(60)
 );
+
+INSERT INTO MRE_Office_Size_DIM_L0 VALUES (1, 'Small: < 4 employees');
+INSERT INTO MRE_Office_Size_DIM_L0 VALUES (2, 'Medium: 4 - 12 employees');
+INSERT INTO MRE_Office_Size_DIM_L0 VALUES (3, 'Big: > 12 employees');
+
+-- MRE_Office_TempDIM_L0
+CREATE TABLE MRE_Office_TempDIM_L0 AS (
+    SELECT DISTINCT
+        ao.Office_ID,
+        o.Office_Name,
+        COUNT(ao.Person_ID) AS Num_of_Employees
+    FROM MRE_Office o, MRE_Agent_Office ao
+    WHERE o.Office_ID = ao.Office_ID
+    GROUP BY ao.Office_ID, o.Office_Name
+);
+
+ALTER TABLE MRE_Office_TempDIM_L0 
+ADD Office_Size_ID NUMBER;
+
+UPDATE MRE_Office_TempDIM_L0
+SET Office_Size_ID = 
+    (CASE
+        WHEN Num_of_Employees < 4 THEN 1
+        WHEN Num_of_Employees BETWEEN 4 AND 12 THEN 2
+        WHEN Num_of_Employees > 12 THEN 3
+     END);    
+
+CREATE TABLE MRE_Office_DIM_L0 AS (
+    SELECT 
+        Office_ID,
+        Office_Name,
+        Office_Size_ID
+    FROM MRE_Office_TempDIM_L0
+);    
 
 -- MRE_Budget_DIM_L0
 CREATE TABLE MRE_Budget_DIM_L0 (
@@ -237,7 +262,7 @@ CREATE TABLE MRE_Sale_FACT_L0 AS (
 );           
 
 -- MRE_Rent_FACT_L0
-CREATE TABLE MRE_Rent_TempFACT_L0 AS (
+CREATE TABLE MRE_Rent_TempFACT AS (
     SELECT
         r.Agent_Person_ID,
         r.Client_Person_ID,
@@ -246,8 +271,7 @@ CREATE TABLE MRE_Rent_TempFACT_L0 AS (
         r.Rent_End_Date,        
         p.Property_No_of_Bedrooms AS Number_of_bedrooms,
         COUNT(pf.Feature_Code) AS Number_of_features,
-        r.Price AS Weekly_Rent_Fee,
-        to_number(to_char(Rent_End_Date, 'WW')) - to_number(to_char(Rent_Start_Date, 'WW')) AS Total_Weeks,
+        ROUND((r.Price / 7) * (Rent_End_Date - Rent_Start_Date), 2) AS Total_Rent_Fee,
         COUNT(DISTINCT r.Rent_ID) AS Number_of_Rent
     FROM MRE_Rent r, MRE_Property p, MRE_Property_Feature pf
     WHERE r.Property_ID = p.Property_ID
@@ -256,16 +280,15 @@ CREATE TABLE MRE_Rent_TempFACT_L0 AS (
     AND r.Rent_Start_Date IS NOT NULL
     AND r.Rent_End_Date IS NOT NULL
     GROUP BY r.Agent_Person_ID, r.Client_Person_ID, r.Property_ID, r.Rent_Start_Date, r.Rent_End_Date, 
-             p.Property_No_of_Bedrooms, r.Price, TO_NUMBER(TO_CHAR(Rent_End_Date, 'WW')) - TO_NUMBER(TO_CHAR(Rent_Start_Date, 'WW'))
+             p.Property_No_of_Bedrooms, ROUND((r.Price / 7) * (Rent_End_Date - Rent_Start_Date), 2)
 );
 
-ALTER TABLE MRE_Rent_TempFACT_L0 
+ALTER TABLE MRE_Rent_TempFACT 
 ADD (Rental_Period_ID NUMBER,
      Scale_ID NUMBER,
-     Feature_Cat_ID NUMBER,
-     Total_Rent_Fee NUMBER);
+     Feature_Cat_ID NUMBER);
      
-UPDATE MRE_Rent_TempFACT_L0
+UPDATE MRE_Rent_TempFACT
 SET Rental_Period_ID = 
         (CASE
             WHEN MONTHS_BETWEEN(Rent_Start_Date, Rent_End_Date) < 6 THEN 1
@@ -285,8 +308,7 @@ SET Rental_Period_ID =
             WHEN Number_of_features < 10 THEN 1
             WHEN Number_of_features BETWEEN 10 AND 20 THEN 2
             WHEN Number_of_features > 20 THEN 3
-        END),
-    Total_Rent_Fee = Weekly_Rent_Fee * Total_Weeks
+        END)
 ;    
 
 CREATE TABLE MRE_Rent_FACT_L0 AS (
@@ -301,11 +323,11 @@ CREATE TABLE MRE_Rent_FACT_L0 AS (
         Feature_Cat_ID,
         Total_Rent_Fee,
         Number_of_Rent
-    FROM MRE_Rent_TempFACT_L0
+    FROM MRE_Rent_TempFACT   
 );   
 
 -- MRE_Client_FACT_L0
-CREATE TABLE MRE_Client_TempFACT_L0 AS (
+CREATE TABLE MRE_Client_TempFACT AS (
     SELECT 
         Person_ID AS Client_Person_ID,
         Max_Budget,
@@ -314,10 +336,10 @@ CREATE TABLE MRE_Client_TempFACT_L0 AS (
     GROUP BY Person_ID, Min_Budget, Max_Budget
 );
 
-ALTER TABLE MRE_Client_TempFACT_L0
+ALTER TABLE MRE_Client_TempFACT
 ADD Budget_ID VARCHAR2(2);
 
-UPDATE MRE_Client_TempFACT_L0
+UPDATE MRE_Client_TempFACT
 SET Budget_ID = 
     (CASE
         WHEN Max_Budget >= 0 AND Max_Budget <= 1000 THEN 1
@@ -330,43 +352,32 @@ CREATE TABLE MRE_Client_FACT_L0 AS (
         Client_Person_ID,
         Budget_ID,
         Number_of_Clients
-    FROM MRE_Client_TempFACT_L0
+    FROM MRE_Client_TempFACT
 );    
 
 -- MRE_Agent_FACT_L0
 CREATE TABLE MRE_Agent_FACT_L0 AS (
-    SELECT 
-        Person_ID AS Agent_Person_ID,
-        Salary AS Total_Earnings
-    FROM MRE_Agent
+    SELECT * FROM 
+    (SELECT 
+        a.Person_ID AS Agent_Person_ID,
+        SUM(rf.Total_Rent_Fee + sf.Total_Sales_Price) AS Total_Earnings
+    FROM MRE_Agent a, MRE_Rent_FACT_L0 rf, MRE_Sale_FACT_L0 sf
+    WHERE a.Person_ID = rf.Agent_Person_ID
+    OR a.Person_ID = sf.Agent_Person_ID
+    GROUP BY a.Person_ID
+    ORDER BY a.Person_ID)
 );
 
 -- MRE_Visit_FACT_L0
-CREATE TABLE MRE_Visit_TempFACT_L0 AS (
+CREATE TABLE MRE_Visit_FACT_L0 AS (
     SELECT DISTINCT 
         Client_Person_ID,
         Agent_Person_ID,
         Property_ID,
-        Visit_Date,
+        TO_CHAR(Visit_Date, 'YYYYMMDY') AS Time_ID,
         COUNT(*) AS Number_of_Visits
     FROM MRE_Visit 
-    GROUP BY Client_Person_ID, Agent_Person_ID, Property_ID, Visit_Date
-);
-
-ALTER TABLE MRE_Visit_TempFACT_L0
-ADD Visit_Time_ID VARCHAR2(5);
-
-UPDATE MRE_Visit_TempFACT_L0
-SET Visit_Time_ID = TO_CHAR(Visit_Date, 'MMDY');
-
-CREATE TABLE MRE_Visit_FACT_L0 AS (
-    SELECT 
-        Client_Person_ID,
-        Agent_Person_ID,
-        Property_ID,
-        Visit_Time_ID,
-        Number_of_Visits
-    FROM MRE_Visit_TempFACT    
+    GROUP BY Client_Person_ID, Agent_Person_ID, Property_ID, TO_CHAR(Visit_Date, 'YYYYMMDY')
 );
 
 -- MRE_Advert_FACT_L0
@@ -374,11 +385,11 @@ CREATE TABLE MRE_Advert_FACT_L0 AS (
     SELECT DISTINCT
         pa.Property_ID,
         pa.Advert_ID,
-        TO_CHAR(p.Property_Date_Added, 'YYYYMMDy') AS Time_ID,
+        TO_CHAR(p.Property_Date_Added, 'YYYYMMDY') AS Time_ID,
         COUNT(pa.Advert_ID) AS Number_of_Adverts
     FROM MRE_Property_Advert pa, MRE_Property p 
     WHERE pa.Property_ID = p.Property_ID
-    GROUP BY pa.Property_ID, pa.Advert_ID, TO_CHAR(p.Property_Date_Added, 'YYYYMMDy')
+    GROUP BY pa.Property_ID, pa.Advert_ID, TO_CHAR(p.Property_Date_Added, 'YYYYMMDY')
 );
 
 
