@@ -29,6 +29,31 @@ SELECT  t.year||t.month as Time_Period,
             GROUP BY a.suburb, CUBE(t.year||t.month, p.property_type);
 
 --Report 6
-
+SELECT  t.year||t.month as Time_period,
+        st.state_name as State,
+        SUM(s.total_sales_price) as Total_Revenue,
+        DECODE(GROUPING(t.year||t.month), 1, 'All Periods', t.year||t.month) as Periods,
+        DECODE(GROUPING(st.state_name), 1, 'All States', st.state_name) as States
+    FROM mre_sale_fact_l2 s, mre_property_dim_l2 p, mre_address_dim_l2 a, mre_postcode_dim_l2 pc, mre_state_dim_l2 st, mre_time_dim_l2 t
+        WHERE s.property_id = p.property_id
+        AND p.address_id = a.address_id
+        AND a.postcode = pc.postcode
+        AND pc.state_code = st.state_code
+        AND s.time_id = t.time_id
+        AND p.property_type = 'House'
+            GROUP BY ROLLUP (t.year||t.month, st.state_name);
 
 --Report 7
+SELECT  t.year||t.month as Time_period,
+        st.state_name as State,
+        SUM(s.total_sales_price) as Total_Revenue,
+        DECODE(GROUPING(t.year||t.month), 1, 'All Periods', t.year||t.month) as Periods,
+        DECODE(GROUPING(st.state_name), 1, 'All States', st.state_name) as States
+    FROM mre_sale_fact_l2 s, mre_property_dim_l2 p, mre_address_dim_l2 a, mre_postcode_dim_l2 pc, mre_state_dim_l2 st, mre_time_dim_l2 t
+        WHERE s.property_id = p.property_id
+        AND p.address_id = a.address_id
+        AND a.postcode = pc.postcode
+        AND pc.state_code = st.state_code
+        AND s.time_id = t.time_id
+        AND p.property_type = 'House'
+            GROUP BY st.state_name, ROLLUP (t.year||t.month);
