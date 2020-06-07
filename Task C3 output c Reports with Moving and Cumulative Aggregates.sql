@@ -27,11 +27,11 @@ UNION
 --Report 9
 SELECT  t.year,
         t.month,
-        number_of_visit as Number_of_Visits,
-        to_char(AVG(SUM(f.number_of_visit)) OVER (ORDER BY t.year, t.month ROWS 2 PRECEDING), '99') as Average_3_Month_Visits
+        SUM(number_of_visit) as Number_of_Visits,
+        to_char(AVG(SUM(f.number_of_visit)) OVER (ORDER BY t.year, t.month ROWS 2 PRECEDING), '999,999') as Average_3_Month_Visits
     FROM mre_visit_fact_l2 f, mre_time_dim_l2 t
         WHERE f.visit_time_id =t.time_id
-            GROUP BY t.year, t.month, number_of_visit
+            GROUP BY t.year, t.month
                 ORDER BY year, month +0;
 
 --Report 10
