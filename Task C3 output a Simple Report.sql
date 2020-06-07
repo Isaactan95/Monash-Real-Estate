@@ -15,20 +15,27 @@ SELECT 	s.scale_description as Scale,
 
 
 --Report 2
-SELECT * FROM (
-SELECT  t.year as Year, t.month as Month, p.type_description as Property_Type, SUM(f.total_sales_price) as Total_Sales_Price, SUM(f.number_of_sales) as Number_of_Sales,
+SELECT *
+    FROM (
+SELECT  t.year as Year,
+        t.month as Month,
+        p.property_type as Property_Type,
+        SUM(f.total_sales_price) as Total_Sales_Price,
+        SUM(f.number_of_sales) as Number_of_Sales,
         PERCENT_RANK() OVER (ORDER BY SUM(f.total_sales_price) DESC) as Revenue_Ranking
-    FROM mre_sale_fact_l2 f, mre_property_type_dim_l2 p, mre_time_dim_l2 t
-        WHERE f.type_id = p.type_id
-        AND f.time_id = t.time_id
-            GROUP BY t.year, t.month, p.type_description)
+    FROM mre_sale_fact_l2 f, mre_property_dim_l2 p, mre_time_dim_l2 t
+        WHERE f.time_id = t.time_id
+            GROUP BY t.year, t.month, p.property_type)
                 WHERE Revenue_Ranking >= 0.85
                     ORDER BY Revenue_Ranking DESC;
 
 
 
 --Report 3
-SELECT t.year as Year, s.season_description as season, a.suburb as suburb, SUM(number_of_visits) as Number_of_Visits
+SELECT  t.year as Year,
+        s.season_description as season,
+        a.suburb as suburb,
+        SUM(number_of_visits) as Number_of_Visits
     FROM mre_visit_fact_l0 f, mre_time_dim_l0 t, mre_season_dim_l0 s, mre_property_dim_l0 p, mre_address_dim_l0 a
         WHERE f.time_id = t.time_id
         AND t.season_id = s.season_id

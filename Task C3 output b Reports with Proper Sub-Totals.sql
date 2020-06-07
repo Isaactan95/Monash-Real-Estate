@@ -4,7 +4,7 @@
 SELECT  t.year||t.month as Time_Period,
         a.suburb as Suburb,
         p.property_type as Property_Type,
-        SUM(f.total_rent_fee) as Rental_Fees,
+        to_char(SUM(f.total_rent_fee), '9,999,999,999.99') as Rental_Fees,
         DECODE(GROUPING(t.year||t.month), 1, 'All Periods', t.year||t.month) as Period,
         DECODE(GROUPING(a.suburb), 1, 'All Suburbs', a.suburb) as Suburbs,
         DECODE(GROUPING(p.property_type), 1, 'All Types', p.property_type) as Types
@@ -18,7 +18,7 @@ SELECT  t.year||t.month as Time_Period,
 SELECT  t.year||t.month as Time_Period,
         a.suburb as Suburb,
         p.property_type as Property_Type,
-        SUM(f.total_rent_fee) as Rental_Fees,
+        to_char(SUM(f.total_rent_fee), '9,999,999,999.99') as Rental_Fees,
         DECODE(GROUPING(t.year||t.month), 1, 'All Periods', t.year||t.month) as Period,
         DECODE(GROUPING(a.suburb), 1, 'All Suburbs', a.suburb) as Suburbs,
         DECODE(GROUPING(p.property_type), 1, 'All Types', p.property_type) as Types
