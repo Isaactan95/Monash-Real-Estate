@@ -1,0 +1,449 @@
+SQL> 
+SQL> --Address
+SQL> SELECT COUNT(*) FROM mre_address;
+
+  COUNT(*)
+----------
+     13204
+
+SQL> 
+SQL> SELECT COUNT(DISTINCT(address_id)) FROM mre_address;
+
+COUNT(DISTINCT(ADDRESS_ID))
+---------------------------
+                      13204
+
+SQL> 
+SQL> SELECT COUNT(DISTINCT(street)) FROM mre_address;
+
+COUNT(DISTINCT(STREET))
+-----------------------
+                  13156
+
+SQL> 
+SQL> SELECT COUNT(*) FROM (
+  2  SELECT DISTINCT(street), suburb, postcode FROM mre_address);
+
+  COUNT(*)
+----------
+     13161
+
+SQL> 
+SQL> SELECT COUNT(*)
+  2  	FROM mre_address
+  3  		WHERE NOT address_id IN (SELECT address_id FROM mre_property)
+  4  		AND NOT address_id IN (SELECT address_id FROM mre_person);
+
+  COUNT(*)
+----------
+         0
+
+SQL> 
+SQL> --Advertisement
+SQL> SELECT COUNT(*) FROM mre_advertisement;
+
+  COUNT(*)
+----------
+        25
+
+SQL> 
+SQL> SELECT COUNT(DISTINCT(advert_id)) FROM mre_advertisement;
+
+COUNT(DISTINCT(ADVERT_ID))
+--------------------------
+                        25
+
+SQL> 
+SQL> SELECT COUNT(DISTINCT(advert_name)) FROM mre_advertisement;
+
+COUNT(DISTINCT(ADVERT_NAME))
+----------------------------
+                          25
+
+SQL> 
+SQL> --Agent
+SQL> SELECT COUNT(*) FROM mre_agent;
+
+  COUNT(*)
+----------
+      2469
+
+SQL> 
+SQL> SELECT COUNT(*)
+  2  	FROM (SELECT * FROM mre_person p, mre_agent a
+  3  		WHERE p.person_id = a.person_id);
+
+  COUNT(*)
+----------
+      2468
+
+SQL> 
+SQL> DELETE FROM mre_agent WHERE NOT person_id IN (SELECT person_id FROM MRE_person);
+
+1 row deleted.
+
+SQL> 
+SQL> SELECT * FROM mre_agent WHERE salary < 0;
+
+ PERSON_ID     SALARY
+---------- ----------
+      6844    -100000
+      6000    -120000
+
+SQL> 
+SQL> DELETE FROM mre_agent WHERE salary < 0;
+
+2 rows deleted.
+
+SQL> 
+SQL> SELECT COUNT(*) FROM mre_agent;
+
+  COUNT(*)
+----------
+      2466
+
+SQL> 
+SQL> --Agent_Office
+SQL> SELECT COUNT(*) FROM mre_agent_office;
+
+  COUNT(*)
+----------
+      2529
+
+SQL> 
+SQL> SELECT COUNT(DISTINCT(person_id)) FROM mre_agent_office;
+
+COUNT(DISTINCT(PERSON_ID))
+--------------------------
+                      2467
+
+SQL> 
+SQL> --Client
+SQL> SELECT COUNT(*) FROM mre_client;
+
+  COUNT(*)
+----------
+      3339
+
+SQL> 
+SQL> SELECT COUNT(*) FROM mre_person p, mre_client c
+  2  	WHERE p.person_id = c.person_id;
+
+  COUNT(*)
+----------
+      3338
+
+SQL> 
+SQL> DELETE FROM mre_client
+  2  	WHERE NOT person_id IN (SELECT person_id FROM mre_person);
+
+1 row deleted.
+
+SQL> 
+SQL> SELECT * FROM mre_client
+  2  	WHERE max_budget < min_budget;
+
+ PERSON_ID MIN_BUDGET MAX_BUDGET
+---------- ---------- ----------
+      5900       8500         50
+      5901       3500       -150
+      5902      12500       5440
+
+SQL> 
+SQL> DELETE FROM mre_client
+  2  	WHERE max_budget < min_budget;
+
+3 rows deleted.
+
+SQL> 
+SQL> SELECT COUNT(*) FROM mre_client;
+
+  COUNT(*)
+----------
+      3335
+
+SQL> 
+SQL> --Client_Wish
+SQL> SELECT COUNT(*) FROM mre_client_wish;
+
+  COUNT(*)
+----------
+      1204
+
+SQL> 
+SQL> --Feature
+SQL> SELECT COUNT(*) FROM mre_feature;
+
+  COUNT(*)
+----------
+       726
+
+SQL> 
+SQL> --Office
+SQL> SELECT COUNT(*) FROM mre_office;
+
+  COUNT(*)
+----------
+      1177
+
+SQL> 
+SQL> --Person
+SQL> SELECT COUNT(*) FROM mre_person;
+
+  COUNT(*)
+----------
+      7000
+
+SQL> 
+SQL> SELECT COUNT(DISTINCT(person_id)) FROM mre_person;
+
+COUNT(DISTINCT(PERSON_ID))
+--------------------------
+                      6997
+
+SQL> 
+SQL> SELECT person_id
+  2  	FROM mre_person
+  3  		GROUP BY person_id
+  4  			HAVING COUNT(*) > 1;
+
+ PERSON_ID
+----------
+      6995
+
+SQL> 
+SQL> DELETE FROM mre_person p
+  2  	WHERE rowid > (SELECT MIN(rowid)FROM mre_person p2
+  3  		WHERE p.person_id = p2.person_id);
+
+3 rows deleted.
+
+SQL> 
+SQL> SELECT COUNT(*) FROM mre_person;
+
+  COUNT(*)
+----------
+      6997
+
+SQL> 
+SQL> --Postcode
+SQL> SELECT COUNT(*) FROM mre_postcode;
+
+  COUNT(*)
+----------
+       689
+
+SQL> 
+SQL> --Property
+SQL> SELECT COUNT(*) FROM mre_property;
+
+  COUNT(*)
+----------
+      6226
+
+SQL> 
+SQL> SELECT COUNT(DISTINCT(property_id)) FROM mre_property;
+
+COUNT(DISTINCT(PROPERTY_ID))
+----------------------------
+                        6208
+
+SQL> 
+SQL> DELETE FROM mre_property p
+  2  	WHERE rowid > (SELECT MIN(rowid)FROM mre_property p2
+  3  		WHERE p.property_id = p2.property_id);
+
+18 rows deleted.
+
+SQL> 
+SQL> SELECT COUNT(*) FROM mre_property;
+
+  COUNT(*)
+----------
+      6208
+
+SQL> 
+SQL> --Property_Advert
+SQL> SELECT COUNT(*) FROM mre_property;
+
+  COUNT(*)
+----------
+      6208
+
+SQL> 
+SQL> ---Property_Feature
+SQL> SELECT COUNT(*) FROM mre_property_feature;
+
+  COUNT(*)
+----------
+     30373
+
+SQL> 
+SQL> --Rent
+SQL> SELECT COUNT(*) FROM mre_rent;
+
+  COUNT(*)
+----------
+      3284
+
+SQL> 
+SQL> SELECT * FROM mre_rent WHERE rent_end_date < rent_start_date;
+
+   RENT_ID AGENT_PERSON_ID CLIENT_PERSON_ID PROPERTY_ID RENT_STAR RENT_END_      PRICE
+---------- --------------- ---------------- ----------- --------- --------- ----------
+      3284            6002             6001        5741 31-DEC-21 01-JUN-19        500
+
+SQL> 
+SQL> DELETE FROM mre_rent
+  2  	WHERE rent_id IN (SELECT rent_id
+  3  						FROM mre_rent
+  4  							WHERE rent_end_date < rent_start_date);
+
+1 row deleted.
+
+SQL> 
+SQL> SELECT COUNT(*) FROM mre_rent;
+
+  COUNT(*)
+----------
+      3283
+
+SQL> 
+SQL> --Sale
+SQL> SELECT COUNT(*) FROM mre_sale;
+
+  COUNT(*)
+----------
+      2925
+
+SQL> 
+SQL> --State
+SQL> SELECT * FROM mre_state;
+
+STA STATE_NAME                                        
+--- --------------------------------------------------
+ACT Australian Capital Territory                      
+NSW New South Wales                                   
+NT  Northern Territory                                
+QLD Queensland                                        
+SA  South Australia                                   
+TAS Tasmania                                          
+VIC Victoria                                          
+WA  Western Australia                                 
+    Unknown                                           
+
+9 rows selected. 
+
+SQL> 
+SQL> DELETE FROM mre_state WHERE state_code IS NULL;
+
+1 row deleted.
+
+SQL> 
+SQL> SELECT COUNT(*) FROM mre_state;
+
+  COUNT(*)
+----------
+         8
+
+SQL> 
+SQL> --Visit
+SQL> SELECT COUNT(*) FROM mre_visit;
+
+  COUNT(*)
+----------
+       575
+
+SQL> 
+SQL> SELECT *
+  2  	FROM mre_visit
+  3  		WHERE NOT agent_person_id IN (SELECT person_ID FROM mre_agent)
+  4  		OR NOT client_person_id IN (SELECT person_id FROM mre_client);
+
+CLIENT_PERSON_ID AGENT_PERSON_ID PROPERTY_ID VISIT_DAT   DURATION
+---------------- --------------- ----------- --------- ----------
+            6000            6001        5741 31-DEC-99          5
+
+SQL> 
+SQL> DELETE FROM mre_visit
+  2  	WHERE NOT agent_person_id IN (SELECT person_ID FROM mre_agent)
+  3  	OR NOT client_person_id IN (SELECT person_id FROM mre_client);
+
+1 row deleted.
+
+SQL> 
+SQL> SELECT COUNT(*) FROM mre_visit;
+
+  COUNT(*)
+----------
+       574
+
+SQL> 
+SQL> 
+SQL> --Special Case
+SQL> SELECT *
+  2  	FROM mre_person
+  3  		WHERE NOT address_id IN (SELECT address_id FROM mre_address);
+
+ PERSON_ID TITLE      FIRST_NAME                                         LAST_NAME                                          GENDER     ADDRESS_ID PHONE_NO             EMAIL                                             
+---------- ---------- -------------------------------------------------- -------------------------------------------------- ---------- ---------- -------------------- --------------------------------------------------
+      7001 null       null                                               null                                               Male            13205 9-(999)999-9999      null                                              
+
+SQL> 
+SQL> SELECT *
+  2  	FROM mre_client
+  3  		WHERE person_id = 7001;
+
+ PERSON_ID MIN_BUDGET MAX_BUDGET
+---------- ---------- ----------
+      7001       7500      11250
+
+SQL> 
+SQL> SELECT *
+  2  	FROM mre_client_wish
+  3  		WHERE person_id = 7001;
+
+FEATURE_CODE  PERSON_ID
+------------ ----------
+         726       7001
+
+SQL> 
+SQL> SELECT *
+  2  	FROM mre_feature
+  3  		WHERE feature_code = 726;
+
+FEATURE_CODE FEATURE_DESCRIPTION                                                                                 
+------------ ----------------------------------------------------------------------------------------------------
+         726 Fake Feature                                                                                        
+
+SQL> 
+SQL> DELETE FROM mre_person
+  2  	WHERE person_id = 7001;
+
+1 row deleted.
+
+SQL> 
+SQL> DELETE FROM mre_client
+  2  	WHERE person_id = 7001;
+
+1 row deleted.
+
+SQL> 
+SQL> DELETE FROM mre_client_wish
+  2  	WHERE person_id = 7001;
+
+1 row deleted.
+
+SQL> 
+SQL> DELETE FROM mre_feature
+  2  	WHERE feature_code = 726;
+
+1 row deleted.
+
+SQL> 
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> 
+SQL> spool off;

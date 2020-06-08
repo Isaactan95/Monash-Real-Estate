@@ -1,0 +1,72 @@
+SQL> 
+SQL> --3
+SQL> --c
+SQL> --Report 8
+SQL> SELECT  year,
+  2          SUM(total_clients) as Number_of_Clients,
+  3          SUM(SUM(total_clients)) OVER (ORDER BY year ROWS UNBOUNDED PRECEDING) as Cumulative_Total
+  4  FROM
+  5  (SELECT * FROM
+  6  (SELECT t.year, SUM(f.number_of_clients) as total_clients
+  7      FROM mre_client_fact_l0 f, mre_budget_dim_l0 b, mre_rent_fact_l0 rf, mre_time_dim_l0 t
+  8          WHERE f.budget_id = b.budget_id
+  9          AND f.client_person_id = rf.client_person_id
+ 10          AND rf.rent_start_date = t.time_id
+ 11          AND b.budget_description LIKE 'High%'
+ 12              GROUP BY t.year)
+ 13  UNION
+ 14  (SELECT t.year, SUM(f.number_of_clients) as total_clients
+ 15      FROM mre_client_fact_l0 f, mre_budget_dim_l0 b,  mre_sale_fact_l0 sf, mre_time_dim_l0 t
+ 16          WHERE f.budget_id = b.budget_id
+ 17          AND f.client_person_id = sf.client_person_id
+ 18          AND sf.time_id = t.time_id
+ 19          AND b.budget_description LIKE 'High%'
+ 20              GROUP BY t.year))
+ 21                  GROUP BY year
+ 22                      ORDER BY year;
+
+YEAR NUMBER_OF_CLIENTS CUMULATIVE_TOTAL
+---- ----------------- ----------------
+2019                23               23
+2020               892              915
+
+SQL> 
+SQL> --Report 9
+SQL> SELECT  t.year,
+  2          t.month,
+  3          SUM(number_of_visit) as Number_of_Visits,
+  4          to_char(AVG(SUM(f.number_of_visit)) OVER (ORDER BY t.year, t.month ROWS 2 PRECEDING), '999,999') as Average_3_Month_Visits
+  5      FROM mre_visit_fact_l2 f, mre_time_dim_l2 t
+  6          WHERE f.visit_time_id =t.time_id
+  7              GROUP BY t.year, t.month
+  8                  ORDER BY year, month +0;
+
+      YEAR      MONTH NUMBER_OF_VISITS AVERAGE_
+---------- ---------- ---------------- --------
+      2020          3              430      430
+      2020          4              144      287
+
+SQL> 
+SQL> --Report 10
+SQL> SELECT  t.year as Year,
+  2          t.month as Month,
+  3          SUM(Number_of_Rent) as Number_of_Rents,
+  4          SUM(SUM(number_of_rent)) OVER (ORDER BY t.year, t.month ROWS UNBOUNDED PRECEDING) as Cumulative_Number_of_Rent
+  5      FROM mre_rent_fact_l2 f, mre_time_dim_l2 t
+  6          WHERE f.time_id = t.time_id
+  7              GROUP BY t.year, t.month
+  8                  ORDER BY year, month +0;
+
+      YEAR      MONTH NUMBER_OF_RENTS CUMULATIVE_NUMBER_OF_RENT
+---------- ---------- --------------- -------------------------
+      2019         12              15                        15
+      2020          1             217                       232
+      2020          2             167                       399
+      2020          3             221                       620
+      2020          4             414                      1034
+      2020          5              82                      1116
+
+6 rows selected. 
+
+SQL> 
+SQL> spool off;

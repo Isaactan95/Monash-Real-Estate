@@ -1,7 +1,9 @@
 --3
 --a
 --Report 1
-SELECT 	s.scale_description as Scale,
+SELECT *
+    FROM
+(SELECT 	s.scale_description as Scale,
 		a.suburb as Suburb, 
 		SUM(f.number_of_rent) as Number_of_Rents,
         ROW_NUMBER() OVER(ORDER BY SUM(f.number_of_rent) DESC) as RANK
@@ -9,9 +11,9 @@ SELECT 	s.scale_description as Scale,
 		WHERE f.scale_id = s.scale_id
 		AND f.property_id = p.property_id
 		AND p.address_id = a.address_id
-        AND ROWNUM <= 16
 			GROUP BY s.scale_description, a.suburb
-                ORDER BY ROW_NUMBER() OVER(ORDER BY SUM(f.number_of_rent) DESC) ASC;
+                ORDER BY ROW_NUMBER() OVER(ORDER BY SUM(f.number_of_rent) DESC) ASC)
+        WHERE RANK <= 15;
 
 
 --Report 2

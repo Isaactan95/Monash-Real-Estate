@@ -1,0 +1,214 @@
+SQL> 
+SQL> --3
+SQL> --a
+SQL> --Report 1
+SQL> SELECT *
+  2      FROM
+  3  (SELECT 	s.scale_description as Scale,
+  4  		a.suburb as Suburb, 
+  5  		SUM(f.number_of_rent) as Number_of_Rents,
+  6          ROW_NUMBER() OVER(ORDER BY SUM(f.number_of_rent) DESC) as RANK
+  7  	FROM mre_rent_fact_l2 f, mre_scale_dim_l2 s, mre_property_dim_l2 p, mre_address_dim_l2 a
+  8  		WHERE f.scale_id = s.scale_id
+  9  		AND f.property_id = p.property_id
+ 10  		AND p.address_id = a.address_id
+ 11  			GROUP BY s.scale_description, a.suburb
+ 12                  ORDER BY ROW_NUMBER() OVER(ORDER BY SUM(f.number_of_rent) DESC) ASC)
+ 13          WHERE RANK <= 15;
+
+SCALE                SUBURB                                                                                               NUMBER_OF_RENTS       RANK
+-------------------- ---------------------------------------------------------------------------------------------------- --------------- ----------
+small                Surfers Paradise                                                                                                  14          1
+small                Kingston                                                                                                          12          2
+small                Melbourne                                                                                                         10          3
+extra small          City                                                                                                              10          4
+extra small          Braddon                                                                                                            9          5
+small                City                                                                                                               9          6
+small                Brisbane City                                                                                                      8          7
+extra small          St Kilda                                                                                                           8          8
+extra small          Kingston                                                                                                           8          9
+small                Adelaide                                                                                                           8         10
+small                Manly                                                                                                              7         11
+
+SCALE                SUBURB                                                                                               NUMBER_OF_RENTS       RANK
+-------------------- ---------------------------------------------------------------------------------------------------- --------------- ----------
+small                Collingwood                                                                                                        7         12
+small                Griffith                                                                                                           7         13
+extra small          Belconnen                                                                                                          7         14
+extra small          Sydney                                                                                                             7         15
+
+15 rows selected. 
+
+SQL> 
+SQL> 
+SQL> --Report 2
+SQL> SELECT *
+  2      FROM (
+  3  SELECT  t.year as Year,
+  4          t.month as Month,
+  5          p.property_type as Property_Type,
+  6          SUM(f.total_sales_price) as Total_Sales_Price,
+  7          SUM(f.number_of_sales) as Number_of_Sales,
+  8          PERCENT_RANK() OVER (ORDER BY SUM(f.total_sales_price) DESC) as Revenue_Ranking
+  9      FROM mre_sale_fact_l2 f, mre_property_dim_l2 p, mre_time_dim_l2 t
+ 10          WHERE f.time_id = t.time_id
+ 11              GROUP BY t.year, t.month, p.property_type)
+ 12                  WHERE Revenue_Ranking >= 0.85
+ 13                      ORDER BY Revenue_Ranking DESC;
+
+      YEAR      MONTH PROPERTY_TYPE                                      TOTAL_SALES_PRICE NUMBER_OF_SALES REVENUE_RANKING
+---------- ---------- -------------------------------------------------- ----------------- --------------- ---------------
+      2019         12 Vacant land                                                 32265900              48      .985507246
+      2019         12 Development Site                                            32265900              48      .985507246
+      2019         12 Penthouse                                                   48398850              72      .971014493
+      2019         12 Block of Units                                             112930650             168      .956521739
+      2020          4 Development Site                                           138551800             174      .927536232
+      2020          4 Vacant land                                                138551800             174      .927536232
+      2019         12 New House & Land                                           145196550             216      .913043478
+      2020          4 Penthouse                                                  207827700             261      .898550725
+      2019         12 Terrace                                                    225861300             336      .884057971
+      2019         12 New Apartments / Off the Plan                              338791950             504      .869565217
+      2019         12 Studio                                                     371057850             552      .855072464
+
+11 rows selected. 
+
+SQL> 
+SQL> 
+SQL> 
+SQL> --Report 3
+SQL> SELECT  t.year as Year,
+  2          s.season_description as season,
+  3          a.suburb as suburb,
+  4          SUM(number_of_visits) as Number_of_Visits
+  5      FROM mre_visit_fact_l0 f, mre_time_dim_l0 t, mre_season_dim_l0 s, mre_property_dim_l0 p, mre_address_dim_l0 a
+  6          WHERE f.time_id = t.time_id
+  7          AND t.season_id = s.season_id
+  8          AND f.property_id = p.property_id
+  9          AND p.address_id = a.address_id
+ 10              GROUP BY t.year, s.season_description, a.suburb
+ 11                  ORDER BY t.year, s.season_description, a.suburb;
+
+YEAR SEASON     SUBURB                                                                                               NUMBER_OF_VISITS
+---- ---------- ---------------------------------------------------------------------------------------------------- ----------------
+2020 Autumn     Albert Park                                                                                                         6
+2020 Autumn     Annandale                                                                                                           6
+2020 Autumn     Armadale                                                                                                            4
+2020 Autumn     Balaclava                                                                                                           6
+2020 Autumn     Barton                                                                                                              1
+2020 Autumn     Belconnen                                                                                                          20
+2020 Autumn     Benowa                                                                                                              9
+2020 Autumn     Braddon                                                                                                             8
+2020 Autumn     Brighton                                                                                                           16
+2020 Autumn     Broadbeach                                                                                                          9
+2020 Autumn     Broadbeach Waters                                                                                                  11
+
+YEAR SEASON     SUBURB                                                                                               NUMBER_OF_VISITS
+---- ---------- ---------------------------------------------------------------------------------------------------- ----------------
+2020 Autumn     Brunswick                                                                                                           1
+2020 Autumn     Bushland Beach                                                                                                      2
+2020 Autumn     Campbell                                                                                                            2
+2020 Autumn     Carnegie                                                                                                            1
+2020 Autumn     Caulfield North                                                                                                     1
+2020 Autumn     Chadstone                                                                                                           1
+2020 Autumn     Chapman                                                                                                             1
+2020 Autumn     Chevron Island                                                                                                     10
+2020 Autumn     Clear Island Waters                                                                                                 2
+2020 Autumn     Collingwood                                                                                                         1
+2020 Autumn     Conder                                                                                                              1
+
+YEAR SEASON     SUBURB                                                                                               NUMBER_OF_VISITS
+---- ---------- ---------------------------------------------------------------------------------------------------- ----------------
+2020 Autumn     Condon                                                                                                              1
+2020 Autumn     Coombs                                                                                                              6
+2020 Autumn     Coomera                                                                                                             5
+2020 Autumn     Coomera Waters                                                                                                      4
+2020 Autumn     Crace                                                                                                               1
+2020 Autumn     Deakin                                                                                                              3
+2020 Autumn     Dickson                                                                                                             4
+2020 Autumn     Docklands                                                                                                           1
+2020 Autumn     Elwood                                                                                                              4
+2020 Autumn     Evatt                                                                                                               5
+2020 Autumn     Fadden                                                                                                              1
+
+YEAR SEASON     SUBURB                                                                                               NUMBER_OF_VISITS
+---- ---------- ---------------------------------------------------------------------------------------------------- ----------------
+2020 Autumn     Fitzroy                                                                                                             3
+2020 Autumn     Franklin                                                                                                            1
+2020 Autumn     Glen Iris                                                                                                           5
+2020 Autumn     Griffith                                                                                                           15
+2020 Autumn     Gungahlin                                                                                                           1
+2020 Autumn     Helensvale                                                                                                          9
+2020 Autumn     Hermit Park                                                                                                         2
+2020 Autumn     Hollywell                                                                                                           1
+2020 Autumn     Hughesdale                                                                                                          3
+2020 Autumn     Jacobs Well                                                                                                         2
+2020 Autumn     Kambah                                                                                                              1
+
+YEAR SEASON     SUBURB                                                                                               NUMBER_OF_VISITS
+---- ---------- ---------------------------------------------------------------------------------------------------- ----------------
+2020 Autumn     Kelso                                                                                                               1
+2020 Autumn     Kingston                                                                                                           38
+2020 Autumn     Kirwan                                                                                                              2
+2020 Autumn     Labrador                                                                                                            1
+2020 Autumn     Lyons                                                                                                               3
+2020 Autumn     Main Beach                                                                                                         26
+2020 Autumn     Mawson                                                                                                              2
+2020 Autumn     Melba                                                                                                               1
+2020 Autumn     Melbourne                                                                                                          52
+2020 Autumn     Mermaid Beach                                                                                                       6
+2020 Autumn     Mermaid Waters                                                                                                      5
+
+YEAR SEASON     SUBURB                                                                                               NUMBER_OF_VISITS
+---- ---------- ---------------------------------------------------------------------------------------------------- ----------------
+2020 Autumn     Merrimac                                                                                                            1
+2020 Autumn     Middle Park                                                                                                         3
+2020 Autumn     Mordialloc                                                                                                          1
+2020 Autumn     Mulgrave                                                                                                            6
+2020 Autumn     Mundingburra                                                                                                        1
+2020 Autumn     Narrabundah                                                                                                         6
+2020 Autumn     Ngunnawal                                                                                                           4
+2020 Autumn     North Ward                                                                                                          2
+2020 Autumn     Northcote                                                                                                           1
+2020 Autumn     O'connor                                                                                                            2
+2020 Autumn     Oakleigh                                                                                                            3
+
+YEAR SEASON     SUBURB                                                                                               NUMBER_OF_VISITS
+---- ---------- ---------------------------------------------------------------------------------------------------- ----------------
+2020 Autumn     Oakleigh East                                                                                                       3
+2020 Autumn     Palmerston                                                                                                          1
+2020 Autumn     Phillip                                                                                                             3
+2020 Autumn     Pimlico                                                                                                             1
+2020 Autumn     Pimpama                                                                                                             4
+2020 Autumn     Prahran                                                                                                             7
+2020 Autumn     Red Hill                                                                                                            5
+2020 Autumn     Richmond                                                                                                           27
+2020 Autumn     Rivett                                                                                                              2
+2020 Autumn     Robina                                                                                                              5
+2020 Autumn     Runaway Bay                                                                                                         3
+
+YEAR SEASON     SUBURB                                                                                               NUMBER_OF_VISITS
+---- ---------- ---------------------------------------------------------------------------------------------------- ----------------
+2020 Autumn     Sanctuary Cove                                                                                                     10
+2020 Autumn     Sorrento                                                                                                           10
+2020 Autumn     South Yarra                                                                                                        12
+2020 Autumn     Southbank                                                                                                           6
+2020 Autumn     Southport                                                                                                          23
+2020 Autumn     Sovereign Islands                                                                                                   2
+2020 Autumn     St Kilda                                                                                                           16
+2020 Autumn     St Kilda East                                                                                                       6
+2020 Autumn     Surfers Paradise                                                                                                   45
+2020 Autumn     Theodore                                                                                                            1
+2020 Autumn     Throsby                                                                                                             2
+
+YEAR SEASON     SUBURB                                                                                               NUMBER_OF_VISITS
+---- ---------- ---------------------------------------------------------------------------------------------------- ----------------
+2020 Autumn     Turner                                                                                                              2
+2020 Autumn     Upper Coomera                                                                                                       7
+2020 Autumn     Weston                                                                                                              2
+2020 Autumn     Willow Vale                                                                                                         1
+2020 Autumn     Windsor                                                                                                             4
+
+93 rows selected. 
+
+SQL> 
+SQL> spool off;

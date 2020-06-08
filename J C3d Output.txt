@@ -1,0 +1,217 @@
+SQL> 
+SQL> --3
+SQL> --d
+SQL> --Report 11
+SQL> SELECT  t.year as Year,
+  2          p.property_type as Property_Type,
+  3          s.state_name as State,
+  4          SUM(f.number_of_sales) as Total_Number_of_Sales,
+  5          RANK() OVER (PARTITION BY t.year ORDER BY SUM(f.number_of_sales) DESC) as RANK_BY_YEAR,
+  6          RANK() OVER (PARTITION BY s.state_name ORDER BY SUM(f.number_of_sales) DESC) as RANK_BY_STATE
+  7      FROM mre_sale_fact_l2 f, mre_property_dim_l2 p, mre_time_dim_l2 t, mre_address_dim_l2 a, mre_postcode_dim_l2 pc, mre_state_dim_l2 s
+  8          WHERE f.property_id = p.property_id
+  9          AND f.time_id = t.time_id
+ 10          AND p.address_id = a.address_id
+ 11          AND a.postcode = pc.postcode
+ 12          AND pc.state_code = s.state_code
+ 13              GROUP BY t.year, p.property_type, s.state_name
+ 14                  ORDER BY SUM(f.number_of_sales) DESC;
+
+      YEAR PROPERTY_TYPE                                      STATE                                              TOTAL_NUMBER_OF_SALES RANK_BY_YEAR RANK_BY_STATE
+---------- -------------------------------------------------- -------------------------------------------------- --------------------- ------------ -------------
+      2020 House                                              Queensland                                                           202            1             1
+      2020 House                                              Victoria                                                             121            2             1
+      2020 Apartment / Unit / Flat                            Queensland                                                           103            3             2
+      2020 House                                              New South Wales                                                       61            4             1
+      2020 Apartment / Unit / Flat                            Victoria                                                              53            5             2
+      2020 House                                              Australian Capital Territory                                          50            6             1
+      2020 House                                              Western Australia                                                     49            7             1
+      2020 Apartment / Unit / Flat                            Australian Capital Territory                                          43            8             2
+      2020 Apartment / Unit / Flat                            New South Wales                                                       41            9             2
+      2020 House                                              South Australia                                                       38           10             1
+      2020 Townhouse                                          Victoria                                                              23           11             3
+
+      YEAR PROPERTY_TYPE                                      STATE                                              TOTAL_NUMBER_OF_SALES RANK_BY_YEAR RANK_BY_STATE
+---------- -------------------------------------------------- -------------------------------------------------- --------------------- ------------ -------------
+      2020 Townhouse                                          Queensland                                                            20           12             3
+      2020 Townhouse                                          Australian Capital Territory                                          17           13             3
+      2020 Apartment / Unit / Flat                            Western Australia                                                     13           14             2
+      2020 Apartment / Unit / Flat                            South Australia                                                        7           15             2
+      2019 House                                              Queensland                                                             6            1             4
+      2020 Townhouse                                          South Australia                                                        6           16             3
+      2020 House                                              Tasmania                                                               5           17             1
+      2020 Townhouse                                          New South Wales                                                        4           18             3
+      2020 Duplex                                             Queensland                                                             4           18             5
+      2020 Townhouse                                          Western Australia                                                      4           18             3
+      2019 Apartment / Unit / Flat                            Australian Capital Territory                                           3            2             4
+
+      YEAR PROPERTY_TYPE                                      STATE                                              TOTAL_NUMBER_OF_SALES RANK_BY_YEAR RANK_BY_STATE
+---------- -------------------------------------------------- -------------------------------------------------- --------------------- ------------ -------------
+      2019 House                                              South Australia                                                        3            2             4
+      2019 House                                              Victoria                                                               3            2             4
+      2020 Villa                                              Queensland                                                             3           21             6
+      2020 Semi-Detached                                      New South Wales                                                        3           21             4
+      2020 Duplex                                             New South Wales                                                        2           23             5
+      2019 House                                              Western Australia                                                      2            5             4
+      2020 Villa                                              New South Wales                                                        2           23             5
+      2020 Block of Units                                     Queensland                                                             2           23             7
+      2020 New Apartments / Off the Plan                      Queensland                                                             2           23             7
+      2020 New Apartments / Off the Plan                      Western Australia                                                      2           23             4
+      2020 Villa                                              Western Australia                                                      2           23             4
+
+      YEAR PROPERTY_TYPE                                      STATE                                              TOTAL_NUMBER_OF_SALES RANK_BY_YEAR RANK_BY_STATE
+---------- -------------------------------------------------- -------------------------------------------------- --------------------- ------------ -------------
+      2020 Terrace                                            Western Australia                                                      1           29             7
+      2020 Development Site                                   Victoria                                                               1           29             5
+      2020 New House & Land                                   Victoria                                                               1           29             5
+      2020 Townhouse                                          Tasmania                                                               1           29             2
+      2020 New House & Land                                   South Australia                                                        1           29             5
+      2020 Duplex                                             Western Australia                                                      1           29             7
+      2020 New House & Land                                   New South Wales                                                        1           29             7
+      2019 Apartment / Unit / Flat                            New South Wales                                                        1            6             7
+      2019 House                                              New South Wales                                                        1            6             7
+      2020 New House & Land                                   Australian Capital Territory                                           1           29             5
+      2020 Studio                                             Australian Capital Territory                                           1           29             5
+
+      YEAR PROPERTY_TYPE                                      STATE                                              TOTAL_NUMBER_OF_SALES RANK_BY_YEAR RANK_BY_STATE
+---------- -------------------------------------------------- -------------------------------------------------- --------------------- ------------ -------------
+      2020 New House & Land                                   Queensland                                                             1           29             9
+      2019 House                                              Australian Capital Territory                                           1            6             5
+      2019 Studio                                             Victoria                                                               1            6             5
+      2019 Townhouse                                          Victoria                                                               1            6             5
+      2019 Duplex                                             Queensland                                                             1            6             9
+      2019 Townhouse                                          Queensland                                                             1            6             9
+
+50 rows selected. 
+
+SQL> 
+SQL> 
+SQL> --Report 12
+SQL> SELECT  t.year as Year,
+  2          ad.advert_name as Advertisement_Type,
+  3          s.state_name as State,
+  4          SUM(f.number_of_adverts) as Yearly_Total_Number_of_Adverts,
+  5          RANK() OVER (PARTITION BY ad.advert_name ORDER BY SUM(f.number_of_adverts) DESC) as RANK_BY_ADVERT_TYPE,
+  6          RANK() OVER (PARTITION BY s.state_name ORDER BY SUM(f.number_of_adverts) DESC) as RANK_BY_STATE
+  7      FROM mre_advert_fact_l0 f, mre_advertisement_dim_l0 ad, mre_property_dim_l0 p, mre_address_dim_l0 a, mre_postcode_dim_l0 pc, mre_state_dim_l0 s, mre_time_dim_l0 t
+  8          WHERE f.advert_id = ad.advert_id
+  9          AND f.property_id = p.property_id
+ 10          AND p.address_id = a.address_id
+ 11          AND a.postcode = pc.postcode
+ 12          AND pc.state_code = s.state_code
+ 13          AND f.time_id = t.time_id
+ 14              GROUP BY t.year, ad.advert_name, s.state_name
+ 15                  ORDER BY SUM(f.number_of_adverts) DESC;
+
+YEAR ADVERTISEMENT_TYPE                                            STATE                                              YEARLY_TOTAL_NUMBER_OF_ADVERTS RANK_BY_ADVERT_TYPE RANK_BY_STATE
+---- ------------------------------------------------------------- -------------------------------------------------- ------------------------------ ------------------- -------------
+2020 Sale House                                                    Queensland                                                                    447                   1             1
+2020 Rent Apartment / Unit / Flat                                  New South Wales                                                               312                   1             1
+2020 Sale House                                                    Victoria                                                                      300                   2             1
+2020 Rent Apartment / Unit / Flat                                  Victoria                                                                      252                   2             2
+2020 Rent House                                                    Queensland                                                                    198                   1             2
+2020 Sale Apartment / Unit / Flat                                  Queensland                                                                    178                   1             3
+2020 Rent Apartment / Unit / Flat                                  Australian Capital Territory                                                  145                   3             1
+2020 Rent Apartment / Unit / Flat                                  Queensland                                                                    144                   4             4
+2020 Sale House                                                    South Australia                                                               128                   3             1
+2020 Sale House                                                    New South Wales                                                               125                   4             2
+2020 Rent House                                                    Victoria                                                                      122                   2             3
+
+YEAR ADVERTISEMENT_TYPE                                            STATE                                              YEARLY_TOTAL_NUMBER_OF_ADVERTS RANK_BY_ADVERT_TYPE RANK_BY_STATE
+---- ------------------------------------------------------------- -------------------------------------------------- ------------------------------ ------------------- -------------
+2020 Sale Apartment / Unit / Flat                                  Victoria                                                                      121                   2             4
+2020 Sale House                                                    Western Australia                                                             113                   5             1
+2020 Sale Apartment / Unit / Flat                                  Australian Capital Territory                                                  110                   3             2
+2020 Sale House                                                    Australian Capital Territory                                                  109                   6             3
+2020 Sale Apartment / Unit / Flat                                  New South Wales                                                                85                   4             3
+2020 Rent House                                                    New South Wales                                                                74                   3             4
+2020 Rent House                                                    Australian Capital Territory                                                   58                   4             4
+2020 Rent House                                                    South Australia                                                                53                   5             2
+2020 Sale Townhouse                                                Victoria                                                                       47                   1             5
+2020 Rent Townhouse                                                Victoria                                                                       47                   1             5
+2020 Rent Apartment / Unit / Flat                                  South Australia                                                                46                   5             3
+
+YEAR ADVERTISEMENT_TYPE                                            STATE                                              YEARLY_TOTAL_NUMBER_OF_ADVERTS RANK_BY_ADVERT_TYPE RANK_BY_STATE
+---- ------------------------------------------------------------- -------------------------------------------------- ------------------------------ ------------------- -------------
+2020 Sale Townhouse                                                Queensland                                                                     40                   2             5
+2020 Sale Townhouse                                                Australian Capital Territory                                                   38                   3             5
+2020 Rent Townhouse                                                Australian Capital Territory                                                   37                   2             6
+2020 Rent Apartment / Unit / Flat                                  Western Australia                                                              28                   6             2
+2020 Rent Townhouse                                                Queensland                                                                     27                   3             6
+2020 Rent House                                                    Western Australia                                                              26                   6             3
+2020 Sale Townhouse                                                New South Wales                                                                23                   4             5
+2020 Sale Apartment / Unit / Flat                                  South Australia                                                                19                   5             4
+2020 Sale House                                                    Tasmania                                                                       18                   7             1
+2020 Rent Townhouse                                                South Australia                                                                13                   4             5
+2020 Sale Apartment / Unit / Flat                                  Western Australia                                                              13                   6             4
+
+YEAR ADVERTISEMENT_TYPE                                            STATE                                              YEARLY_TOTAL_NUMBER_OF_ADVERTS RANK_BY_ADVERT_TYPE RANK_BY_STATE
+---- ------------------------------------------------------------- -------------------------------------------------- ------------------------------ ------------------- -------------
+2020 Sale Townhouse                                                South Australia                                                                11                   5             6
+2020 Sale New Apartments / Off the Plan                            Queensland                                                                      9                   1             7
+2020 Sale Villa                                                    Western Australia                                                               8                   1             5
+2020 Sale Villa                                                    New South Wales                                                                 8                   1             6
+2020 Rent Townhouse                                                New South Wales                                                                 7                   5             7
+2020 Sale Villa                                                    Queensland                                                                      7                   3             8
+2020 Sale Apartment / Unit / Flat                                  Tasmania                                                                        6                   7             2
+2020 Rent Studio                                                   New South Wales                                                                 6                   1             8
+2020 Rent Duplex                                                   Queensland                                                                      6                   1             9
+2020 Sale Semi-Detached                                            New South Wales                                                                 5                   1             9
+2020 Rent Villa                                                    Western Australia                                                               5                   1             6
+
+YEAR ADVERTISEMENT_TYPE                                            STATE                                              YEARLY_TOTAL_NUMBER_OF_ADVERTS RANK_BY_ADVERT_TYPE RANK_BY_STATE
+---- ------------------------------------------------------------- -------------------------------------------------- ------------------------------ ------------------- -------------
+2020 Rent Semi-Detached                                            New South Wales                                                                 5                   1             9
+2020 Rent Terrace                                                  New South Wales                                                                 4                   1            11
+2020 Sale Block of Units                                           Queensland                                                                      4                   1            10
+2020 Sale Townhouse                                                Western Australia                                                               4                   6             7
+2020 Sale Duplex                                                   Queensland                                                                      4                   1            10
+2020 Rent Townhouse                                                Western Australia                                                               4                   6             7
+2020 Sale New Apartments / Off the Plan                            Western Australia                                                               3                   2             9
+2020 Sale Duplex                                                   New South Wales                                                                 3                   2            12
+2020 Rent Studio                                                   Victoria                                                                        2                   2             7
+2020 Sale Duplex                                                   Australian Capital Territory                                                    2                   3             7
+2020 Sale Townhouse                                                Tasmania                                                                        2                   7             3
+
+YEAR ADVERTISEMENT_TYPE                                            STATE                                              YEARLY_TOTAL_NUMBER_OF_ADVERTS RANK_BY_ADVERT_TYPE RANK_BY_STATE
+---- ------------------------------------------------------------- -------------------------------------------------- ------------------------------ ------------------- -------------
+2020 Rent Duplex                                                   Australian Capital Territory                                                    2                   2             7
+2020 Sale Terrace                                                  New South Wales                                                                 2                   1            13
+2020 Sale New Apartments / Off the Plan                            New South Wales                                                                 2                   3            13
+2020 Rent Villa                                                    New South Wales                                                                 2                   2            13
+2020 Sale Apartment / Unit / Flat                                  Northern Territory                                                              2                   8             1
+2020 Sale New House & Land                                         New South Wales                                                                 2                   1            13
+2020 Sale New House & Land                                         South Australia                                                                 1                   2             7
+2020 Sale Penthouse                                                Queensland                                                                      1                   1            12
+2020 Rent Duplex                                                   New South Wales                                                                 1                   3            17
+2020 Sale Semi-Detached                                            South Australia                                                                 1                   2             7
+2020 Sale Semi-Detached                                            Australian Capital Territory                                                    1                   2             9
+
+YEAR ADVERTISEMENT_TYPE                                            STATE                                              YEARLY_TOTAL_NUMBER_OF_ADVERTS RANK_BY_ADVERT_TYPE RANK_BY_STATE
+---- ------------------------------------------------------------- -------------------------------------------------- ------------------------------ ------------------- -------------
+2020 Sale Semi-Detached                                            Western Australia                                                               1                   2            10
+2020 Rent Apartment / Unit / Flat                                  Northern Territory                                                              1                   7             2
+2020 Sale Vacant land                                              Australian Capital Territory                                                    1                   1             9
+2020 Rent Studio                                                   Queensland                                                                      1                   3            12
+2020 Sale Vacant land                                              Victoria                                                                        1                   1             8
+2020 Rent Studio                                                   Australian Capital Territory                                                    1                   3             9
+2020 Sale New House & Land                                         Australian Capital Territory                                                    1                   2             9
+2020 Sale New Apartments / Off the Plan                            Victoria                                                                        1                   4             8
+2020 Rent Duplex                                                   Western Australia                                                               1                   3            10
+2020 Rent Penthouse                                                Victoria                                                                        1                   1             8
+2020 Sale Duplex                                                   Western Australia                                                               1                   4            10
+
+YEAR ADVERTISEMENT_TYPE                                            STATE                                              YEARLY_TOTAL_NUMBER_OF_ADVERTS RANK_BY_ADVERT_TYPE RANK_BY_STATE
+---- ------------------------------------------------------------- -------------------------------------------------- ------------------------------ ------------------- -------------
+2020 Rent Block of Units                                           New South Wales                                                                 1                   1            17
+2020 Sale Development Site                                         New South Wales                                                                 1                   1            17
+2020 Rent Semi-Detached                                            Queensland                                                                      1                   2            12
+2020 Rent Semi-Detached                                            Australian Capital Territory                                                    1                   2             9
+2020 Rent Villa                                                    Victoria                                                                        1                   3             8
+2020 Rent Terrace                                                  South Australia                                                                 1                   2             7
+2020 Rent Villa                                                    Queensland                                                                      1                   3            12
+
+84 rows selected. 
+
+SQL> 
+SQL> spool off;

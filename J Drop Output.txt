@@ -1,0 +1,315 @@
+SQL> 
+SQL> DROP TABLE MRE_ADDRESS PURGE;
+
+Table MRE_ADDRESS dropped.
+
+SQL> DROP TABLE MRE_ADVERTISEMENT PURGE;
+
+Table MRE_ADVERTISEMENT dropped.
+
+SQL> DROP TABLE MRE_AGENT PURGE;
+
+Table MRE_AGENT dropped.
+
+SQL> DROP TABLE MRE_AGENT_OFFICE PURGE;
+
+Table MRE_AGENT_OFFICE dropped.
+
+SQL> DROP TABLE MRE_CLIENT PURGE;
+
+Table MRE_CLIENT dropped.
+
+SQL> DROP TABLE MRE_CLIENT_WISH PURGE;
+
+Table MRE_CLIENT_WISH dropped.
+
+SQL> DROP TABLE MRE_FEATURE PURGE;
+
+Table MRE_FEATURE dropped.
+
+SQL> DROP TABLE MRE_OFFICE PURGE;
+
+Table MRE_OFFICE dropped.
+
+SQL> DROP TABLE MRE_PERSON PURGE;
+
+Table MRE_PERSON dropped.
+
+SQL> DROP TABLE MRE_POSTCODE PURGE;
+
+Table MRE_POSTCODE dropped.
+
+SQL> DROP TABLE MRE_PROPERTY PURGE;
+
+Table MRE_PROPERTY dropped.
+
+SQL> DROP TABLE MRE_PROPERTY_ADVERT PURGE;
+
+Table MRE_PROPERTY_ADVERT dropped.
+
+SQL> DROP TABLE MRE_PROPERTY_FEATURE PURGE;
+
+Table MRE_PROPERTY_FEATURE dropped.
+
+SQL> DROP TABLE MRE_RENT PURGE;
+
+Table MRE_RENT dropped.
+
+SQL> DROP TABLE MRE_SALE PURGE;
+
+Table MRE_SALE dropped.
+
+SQL> DROP TABLE MRE_STATE PURGE;
+
+Table MRE_STATE dropped.
+
+SQL> DROP TABLE MRE_VISIT PURGE;
+
+Table MRE_VISIT dropped.
+
+SQL> 
+SQL> --Level 0
+SQL> DROP TABLE MRE_Scale_DIM_l0 PURGE;
+
+Table MRE_SCALE_DIM_L0 dropped.
+
+SQL> DROP TABLE MRE_Feature_Cat_DIM_l0 PURGE;
+
+Table MRE_FEATURE_CAT_DIM_L0 dropped.
+
+SQL> DROP TABLE MRE_Property_DIM_l0 PURGE;
+
+Table MRE_PROPERTY_DIM_L0 dropped.
+
+SQL> DROP TABLE MRE_Property_Feature_Bridge_l0 PURGE;
+
+Table MRE_PROPERTY_FEATURE_BRIDGE_L0 dropped.
+
+SQL> DROP TABLE MRE_Feature_DIM_l0 PURGE;
+
+Table MRE_FEATURE_DIM_L0 dropped.
+
+SQL> DROP TABLE MRE_Wishlist_DIM_L0 PURGE;
+
+Table MRE_WISHLIST_DIM_L0 dropped.
+
+SQL> DROP TABLE MRE_Property_Type_DIM_l0 PURGE;
+
+Table MRE_PROPERTY_TYPE_DIM_L0 dropped.
+
+SQL> DROP TABLE MRE_Address_DIM_l0 PURGE;
+
+Table MRE_ADDRESS_DIM_L0 dropped.
+
+SQL> DROP TABLE MRE_Postcode_DIM_l0 PURGE;
+
+Table MRE_POSTCODE_DIM_L0 dropped.
+
+SQL> DROP TABLE MRE_State_DIM_l0 PURGE;
+
+Table MRE_STATE_DIM_L0 dropped.
+
+SQL> DROP TABLE MRE_Advertisement_DIM_l0 PURGE;
+
+Table MRE_ADVERTISEMENT_DIM_L0 dropped.
+
+SQL> DROP TABLE MRE_Person_DIM_l0 PURGE;
+
+Table MRE_PERSON_DIM_L0 dropped.
+
+SQL> DROP TABLE MRE_Agent_Office_DIM_l0 PURGE;
+
+Table MRE_AGENT_OFFICE_DIM_L0 dropped.
+
+SQL> DROP TABLE MRE_Office_Size_DIM_l0 PURGE;
+
+Table MRE_OFFICE_SIZE_DIM_L0 dropped.
+
+SQL> DROP TABLE MRE_office_tempdim_l0 PURGE;
+
+Table MRE_OFFICE_TEMPDIM_L0 dropped.
+
+SQL> DROP TABLE MRE_Office_DIM_l0 PURGE;
+
+Table MRE_OFFICE_DIM_L0 dropped.
+
+SQL> DROP TABLE MRE_Budget_DIM_l0 PURGE;
+
+Table MRE_BUDGET_DIM_L0 dropped.
+
+SQL> DROP TABLE MRE_Rental_Period_DIM_l0 PURGE;
+
+Table MRE_RENTAL_PERIOD_DIM_L0 dropped.
+
+SQL> DROP TABLE MRE_Rent_Price_DIM_l0 PURGE;
+
+Table MRE_RENT_PRICE_DIM_L0 dropped.
+
+SQL> DROP TABLE MRE_Season_DIM_l0 PURGE;
+
+Table MRE_SEASON_DIM_L0 dropped.
+
+SQL> DROP TABLE MRE_Time_DIM_l0 PURGE;
+
+Table MRE_TIME_DIM_L0 dropped.
+
+SQL> DROP TABLE MRE_Sale_FACT_l0 PURGE;
+
+Table MRE_SALE_FACT_L0 dropped.
+
+SQL> DROP TABLE MRE_Rent_TempFACT_l0 PURGE;
+
+Table MRE_RENT_TEMPFACT_L0 dropped.
+
+SQL> DROP TABLE MRE_Rent_FACT_l0 PURGE;
+
+Table MRE_RENT_FACT_L0 dropped.
+
+SQL> DROP TABLE MRE_Client_TempFACT_l0 PURGE;
+
+Table MRE_CLIENT_TEMPFACT_L0 dropped.
+
+SQL> DROP TABLE MRE_Client_FACT_l0 PURGE;
+
+Table MRE_CLIENT_FACT_L0 dropped.
+
+SQL> DROP TABLE MRE_Agent_FACT_l0 PURGE;
+
+Table MRE_AGENT_FACT_L0 dropped.
+
+SQL> DROP TABLE MRE_Visit_FACT_l0 PURGE;
+
+Table MRE_VISIT_FACT_L0 dropped.
+
+SQL> DROP TABLE MRE_Advert_FACT_l0 PURGE;
+
+Table MRE_ADVERT_FACT_L0 dropped.
+
+SQL> 
+SQL> --Level 2
+SQL> DROP TABLE MRE_scale_DIM_l2 PURGE;
+
+Table MRE_SCALE_DIM_L2 dropped.
+
+SQL> DROP TABLE MRE_feature_cat_DIM_l2 PURGE;
+
+Table MRE_FEATURE_CAT_DIM_L2 dropped.
+
+SQL> DROP TABLE MRE_property_dim_l2 PURGE;
+
+Table MRE_PROPERTY_DIM_L2 dropped.
+
+SQL> DROP TABLE MRE_property_feature_bridge_l2 PURGE;
+
+Table MRE_PROPERTY_FEATURE_BRIDGE_L2 dropped.
+
+SQL> DROP TABLE MRE_feature_dim_l2 PURGE;
+
+Table MRE_FEATURE_DIM_L2 dropped.
+
+SQL> DROP TABLE MRE_property_type_dim_l2 PURGE;
+
+Table MRE_PROPERTY_TYPE_DIM_L2 dropped.
+
+SQL> DROP TABLE MRE_address_dim_l2 PURGE;
+
+Table MRE_ADDRESS_DIM_L2 dropped.
+
+SQL> DROP TABLE MRE_postcode_dim_l2 PURGE;
+
+Table MRE_POSTCODE_DIM_L2 dropped.
+
+SQL> DROP TABLE MRE_state_dim_l2 PURGE;
+
+Table MRE_STATE_DIM_L2 dropped.
+
+SQL> DROP TABLE MRE_advertisement_dim_l2 PURGE;
+
+Table MRE_ADVERTISEMENT_DIM_L2 dropped.
+
+SQL> DROP TABLE MRE_person_dim_l2 PURGE;
+
+Table MRE_PERSON_DIM_L2 dropped.
+
+SQL> DROP TABLE MRE_agent_office_dim_l2 PURGE;
+
+Table MRE_AGENT_OFFICE_DIM_L2 dropped.
+
+SQL> DROP TABLE MRE_office_dim_l2 PURGE;
+
+Table MRE_OFFICE_DIM_L2 dropped.
+
+SQL> DROP TABLE MRE_budget_dim_l2 PURGE;
+
+Table MRE_BUDGET_DIM_L2 dropped.
+
+SQL> DROP TABLE MRE_rental_period_dim_l2 PURGE;
+
+Table MRE_RENTAL_PERIOD_DIM_L2 dropped.
+
+SQL> DROP TABLE MRE_wishlist_dim_l2 PURGE;
+
+Table MRE_WISHLIST_DIM_L2 dropped.
+
+SQL> DROP TABLE MRE_rent_price_dim_l2 PURGE;
+
+Table MRE_RENT_PRICE_DIM_L2 dropped.
+
+SQL> DROP TABLE MRE_temp_time_dim_l2 PURGE;
+
+Table MRE_TEMP_TIME_DIM_L2 dropped.
+
+SQL> DROP TABLE MRE_time_dim_l2 PURGE;
+
+Table MRE_TIME_DIM_L2 dropped.
+
+SQL> DROP TABLE MRE_season_dim_l2 PURGE;
+
+Table MRE_SEASON_DIM_L2 dropped.
+
+SQL> DROP TABLE MRE_agent_fact_l2 PURGE;
+
+Table MRE_AGENT_FACT_L2 dropped.
+
+SQL> DROP TABLE MRE_temp_client_l2 PURGE;
+
+Table MRE_TEMP_CLIENT_L2 dropped.
+
+SQL> DROP TABLE MRE_client_fact_l2 PURGE;
+
+Table MRE_CLIENT_FACT_L2 dropped.
+
+SQL> DROP TABLE MRE_temp_rent_fact_l2 PURGE;
+
+Table MRE_TEMP_RENT_FACT_L2 dropped.
+
+SQL> DROP TABLE MRE_rent_fact_l2 PURGE;
+
+Table MRE_RENT_FACT_L2 dropped.
+
+SQL> DROP TABLE MRE_temp_visit_l2 PURGE;
+
+Table MRE_TEMP_VISIT_L2 dropped.
+
+SQL> DROP TABLE MRE_visit_fact_l2 PURGE;
+
+Table MRE_VISIT_FACT_L2 dropped.
+
+SQL> DROP TABLE MRE_temp_sale_fact_l2 PURGE;
+
+Table MRE_TEMP_SALE_FACT_L2 dropped.
+
+SQL> DROP TABLE MRE_sale_fact_l2 PURGE;
+
+Table MRE_SALE_FACT_L2 dropped.
+
+SQL> DROP TABLE MRE_temp_advert_l2 PURGE;
+
+Table MRE_TEMP_ADVERT_L2 dropped.
+
+SQL> DROP TABLE MRE_advert_fact_l2 PURGE;
+
+Table MRE_ADVERT_FACT_L2 dropped.
+
+SQL> 
+SQL> spool off;

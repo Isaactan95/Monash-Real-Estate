@@ -172,9 +172,9 @@ alter table mre_temp_time_dim_l2
         Season_id numeric(1));       
 
 update mre_temp_time_dim_l2
-    set time_id = to_char(to_date(dates, 'DD/MM/YYYY'), 'YYYYMMDY'),
-        year = to_number(to_char(to_date(dates, 'DD/MM/YYYY'), 'YYYY')),
-        month = to_number(to_char(to_date(dates, 'DD/MM/YYYY'), 'mm'));
+    set time_id = to_char(dates, 'YYYYMMDY'),
+        year = to_char(dates, 'YYYY'),
+        month = to_char(dates, 'MM');
 
 update mre_temp_time_dim_l2
     set season_id = 
@@ -249,7 +249,7 @@ alter table mre_temp_rent_fact_l2 add (
     feature_cat_id numeric(1));
 
 update mre_temp_rent_fact_l2
-    set time_id = to_char(to_date(rent_start_date, 'DD/MM/YYYY'), 'YYYYMMDY'),
+    set time_id = to_char(rent_start_date, 'YYYYMMDY'),
         scale_id =
             case 
                 when property_no_of_bedrooms between 0 and 1 then 1
@@ -279,7 +279,7 @@ alter table mre_temp_visit_l2
     add visit_time_id varchar(20);
 
 update mre_temp_visit_l2
-    set visit_time_id = to_char(to_date(visit_date, 'DD/MM/YYYY'), 'YYYYMMDY');
+    set visit_time_id = to_char(visit_date, 'YYYYMMDY');
 
 create table mre_visit_fact_l2
     as select visit_time_id, count(*) as number_of_visit
@@ -298,7 +298,7 @@ alter table mre_temp_sale_fact_l2 add (
 
 set define off;
 update mre_temp_sale_fact_l2
-    set time_id = to_char(to_date(sale_date, 'DD/MM/YYYY'), 'YYYYMMDY');
+    set time_id = to_char(sale_date, 'YYYYMMDY');
 
 create table mre_sale_fact_l2
     as select property_id, time_id, sum(price) as total_sales_price, count(*) as number_of_sales
@@ -315,9 +315,11 @@ alter table mre_temp_advert_l2
     add time_id varchar(20);
 
 update mre_temp_advert_l2
-    set time_id = to_char(to_date(property_date_added, 'DD/MM/YYYY'), 'YYYYMMDY');
+    set time_id = to_char(property_date_added, 'YYYYMMDY');
 
 create table mre_advert_fact_l2
     as select time_id, advert_id, count(*) as number_of_adverts
         from mre_temp_advert_l2
             group by time_id, advert_id;
+
+commit;

@@ -1,0 +1,774 @@
+SQL> 
+SQL> -- Task c 2b)
+SQL> -- Level 2 multi-fact star schema
+SQL> DROP TABLE MRE_scale_DIM_l2 PURGE;
+
+Error starting at line : 7 in command -
+DROP TABLE MRE_scale_DIM_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_feature_cat_DIM_l2 PURGE;
+
+Error starting at line : 8 in command -
+DROP TABLE MRE_feature_cat_DIM_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_property_dim_l2 PURGE;
+
+Error starting at line : 9 in command -
+DROP TABLE MRE_property_dim_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_property_feature_bridge_l2 PURGE;
+
+Error starting at line : 10 in command -
+DROP TABLE MRE_property_feature_bridge_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_feature_dim_l2 PURGE;
+
+Error starting at line : 11 in command -
+DROP TABLE MRE_feature_dim_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_property_type_dim_l2 PURGE;
+
+Error starting at line : 12 in command -
+DROP TABLE MRE_property_type_dim_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_address_dim_l2 PURGE;
+
+Error starting at line : 13 in command -
+DROP TABLE MRE_address_dim_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_postcode_dim_l2 PURGE;
+
+Error starting at line : 14 in command -
+DROP TABLE MRE_postcode_dim_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_state_dim_l2 PURGE;
+
+Error starting at line : 15 in command -
+DROP TABLE MRE_state_dim_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_advertisement_dim_l2 PURGE;
+
+Error starting at line : 16 in command -
+DROP TABLE MRE_advertisement_dim_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_person_dim_l2 PURGE;
+
+Error starting at line : 17 in command -
+DROP TABLE MRE_person_dim_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_agent_office_dim_l2 PURGE;
+
+Error starting at line : 18 in command -
+DROP TABLE MRE_agent_office_dim_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_office_dim_l2 PURGE;
+
+Error starting at line : 19 in command -
+DROP TABLE MRE_office_dim_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_budget_dim_l2 PURGE;
+
+Error starting at line : 20 in command -
+DROP TABLE MRE_budget_dim_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_rental_period_dim_l2 PURGE;
+
+Error starting at line : 21 in command -
+DROP TABLE MRE_rental_period_dim_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_wishlist_dim_l2 PURGE;
+
+Error starting at line : 22 in command -
+DROP TABLE MRE_wishlist_dim_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_rent_price_dim_l2 PURGE;
+
+Error starting at line : 23 in command -
+DROP TABLE MRE_rent_price_dim_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_temp_time_dim_l2 PURGE;
+
+Error starting at line : 24 in command -
+DROP TABLE MRE_temp_time_dim_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_time_dim_l2 PURGE;
+
+Error starting at line : 25 in command -
+DROP TABLE MRE_time_dim_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_season_dim_l2 PURGE;
+
+Error starting at line : 26 in command -
+DROP TABLE MRE_season_dim_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_agent_fact_l2 PURGE;
+
+Error starting at line : 27 in command -
+DROP TABLE MRE_agent_fact_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_temp_client_l2 PURGE;
+
+Error starting at line : 28 in command -
+DROP TABLE MRE_temp_client_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_client_fact_l2 PURGE;
+
+Error starting at line : 29 in command -
+DROP TABLE MRE_client_fact_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_temp_rent_fact_l2 PURGE;
+
+Error starting at line : 30 in command -
+DROP TABLE MRE_temp_rent_fact_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_rent_fact_l2 PURGE;
+
+Error starting at line : 31 in command -
+DROP TABLE MRE_rent_fact_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_temp_visit_l2 PURGE;
+
+Error starting at line : 32 in command -
+DROP TABLE MRE_temp_visit_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_visit_fact_l2 PURGE;
+
+Error starting at line : 33 in command -
+DROP TABLE MRE_visit_fact_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_temp_sale_fact_l2 PURGE;
+
+Error starting at line : 34 in command -
+DROP TABLE MRE_temp_sale_fact_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_sale_fact_l2 PURGE;
+
+Error starting at line : 35 in command -
+DROP TABLE MRE_sale_fact_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_temp_advert_l2 PURGE;
+
+Error starting at line : 36 in command -
+DROP TABLE MRE_temp_advert_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> DROP TABLE MRE_advert_fact_l2 PURGE;
+
+Error starting at line : 37 in command -
+DROP TABLE MRE_advert_fact_l2 PURGE
+Error report -
+ORA-00942: table or view does not exist
+00942. 00000 -  "table or view does not exist"
+*Cause:    
+*Action:
+SQL> 
+SQL> -- Dimension tables
+SQL> -- Scale dimension
+SQL> create table mre_scale_dim_l2 (
+  2      scale_id numeric(1),
+  3      scale_description char(20));
+
+Table MRE_SCALE_DIM_L2 created.
+
+SQL> 
+SQL> insert into mre_scale_dim_l2 values(1, 'extra small');
+
+1 row inserted.
+
+SQL> insert into mre_scale_dim_l2 values(2, 'small');
+
+1 row inserted.
+
+SQL> insert into mre_scale_dim_l2 values(3, 'medium');
+
+1 row inserted.
+
+SQL> insert into mre_scale_dim_l2 values(4, 'large');
+
+1 row inserted.
+
+SQL> insert into mre_scale_dim_l2 values(5, 'extra large');
+
+1 row inserted.
+
+SQL> 
+SQL> -- Feature catagory dimension
+SQL> create table mre_feature_cat_dim_l2(
+  2      feature_cat_id numeric(1),
+  3      feature_cat_description char(15));
+
+Table MRE_FEATURE_CAT_DIM_L2 created.
+
+SQL> 
+SQL> insert into mre_feature_cat_dim_l2 values(1,'basic');
+
+1 row inserted.
+
+SQL> insert into mre_feature_cat_dim_l2 values(2,'standard');
+
+1 row inserted.
+
+SQL> insert into mre_feature_cat_dim_l2 values(3,'luxurious');
+
+1 row inserted.
+
+SQL> 
+SQL> 
+SQL> -- Property dimension
+SQL> create table mre_property_dim_l2
+  2      as select property_id, address_id, property_type
+  3          from mre_property;
+
+Table MRE_PROPERTY_DIM_L2 created.
+
+SQL> 
+SQL> -- Property feature bridge
+SQL> create table mre_property_feature_bridge_l2
+  2      as select distinct * 
+  3          from mre_property_feature;
+
+Table MRE_PROPERTY_FEATURE_BRIDGE_L2 created.
+
+SQL> 
+SQL> 
+SQL> -- feature dim
+SQL> create table mre_feature_dim_l2
+  2      as select distinct *
+  3          from mre_feature;
+
+Table MRE_FEATURE_DIM_L2 created.
+
+SQL> 
+SQL> -- property type dimension
+SQL> create table mre_property_type_dim_l2 
+  2      as select distinct(property_type)
+  3          from mre_property;
+
+Table MRE_PROPERTY_TYPE_DIM_L2 created.
+
+SQL> 
+SQL> -- Address dim
+SQL> create table mre_address_dim_l2
+  2      as select distinct address_id, suburb, postcode
+  3          from mre_address;
+
+Table MRE_ADDRESS_DIM_L2 created.
+
+SQL> 
+SQL> -- postcode dim
+SQL> create table mre_postcode_dim_l2
+  2      as select distinct * 
+  3          from mre_postcode;
+
+Table MRE_POSTCODE_DIM_L2 created.
+
+SQL> 
+SQL> -- state dim
+SQL> create table mre_state_dim_l2
+  2      as select * 
+  3          from mre_state;
+
+Table MRE_STATE_DIM_L2 created.
+
+SQL> 
+SQL> -- Advertisment dim
+SQL> create table mre_advertisement_dim_l2
+  2      as select distinct *
+  3          from mre_advertisement;
+
+Table MRE_ADVERTISEMENT_DIM_L2 created.
+
+SQL> 
+SQL> -- person dim        
+SQL> create table mre_person_dim_l2
+  2      as select person_id, first_name, last_name, gender, address_id
+  3          from mre_person;
+
+Table MRE_PERSON_DIM_L2 created.
+
+SQL> 
+SQL> -- agent office dim
+SQL> create table mre_agent_office_dim_l2
+  2      as select distinct person_id as agent_person_id, office_id 
+  3          from mre_agent_office;
+
+Table MRE_AGENT_OFFICE_DIM_L2 created.
+
+SQL> 
+SQL> -- office dim        
+SQL> create table mre_office_dim_l2
+  2      as select *
+  3          from mre_office;
+
+Table MRE_OFFICE_DIM_L2 created.
+
+SQL> 
+SQL> alter table mre_office_dim_l2
+  2      add office_size char(10);
+
+Table MRE_OFFICE_DIM_L2 altered.
+
+SQL> 
+SQL> update mre_office_dim_l2 t
+  2      set office_size = 
+  3          (select case 
+  4                      when count(person_id) < 4 then 'small'
+  5                      when count(person_id) between 4 and 12 then 'medium'
+  6                      else 'big'
+  7                  end
+  8                  from mre_agent_office ao
+  9                  where t.office_id = ao.office_id);
+
+1,177 rows updated.
+
+SQL> 
+SQL> -- Budget dimension 
+SQL> create table mre_budget_dim_l2(
+  2      budget_id char(2),
+  3      budget_description varchar(100));
+
+Table MRE_BUDGET_DIM_L2 created.
+
+SQL> 
+SQL> insert into mre_budget_dim_l2 values ('l', 'Budget between 0 and 1000');
+
+1 row inserted.
+
+SQL> insert into mre_budget_dim_l2 values ('m', 'Budget between 1001 and 100000');
+
+1 row inserted.
+
+SQL> insert into mre_budget_dim_l2 values ('h', 'Budget more than 100001');
+
+1 row inserted.
+
+SQL> 
+SQL> -- Rental period DIM
+SQL> create table mre_rental_period_dim_l2(
+  2      rental_period_id numeric(2),
+  3      rental_period_description varchar(50));
+
+Table MRE_RENTAL_PERIOD_DIM_L2 created.
+
+SQL> 
+SQL> insert into mre_rental_period_dim_l2 values (1, 'short');
+
+1 row inserted.
+
+SQL> insert into mre_rental_period_dim_l2 values (2, 'medium');
+
+1 row inserted.
+
+SQL> insert into mre_rental_period_dim_l2 values (3, 'long');
+
+1 row inserted.
+
+SQL> 
+SQL> -- whishlist dim
+SQL> create table mre_wishlist_dim_l2
+  2      as select distinct * 
+  3          from mre_client_wish;
+
+Table MRE_WISHLIST_DIM_L2 created.
+
+SQL> 
+SQL> -- Rent price dimension
+SQL> create table mre_rent_price_dim_l2
+  2      as select property_id, rent_start_date, rent_end_date, price
+  3          from mre_rent;
+
+Table MRE_RENT_PRICE_DIM_L2 created.
+
+SQL> 
+SQL> -- Time dimension 
+SQL> create table mre_temp_time_dim_l2
+  2      as select *
+  3          from (select distinct sale_date as dates from mre_sale
+  4                      where sale_date is not null
+  5                  union 
+  6                  select distinct rent_start_date from mre_rent
+  7                      where rent_start_date is not null
+  8                  union 
+  9                  select distinct rent_end_date from mre_rent
+ 10                      where rent_end_date is not null
+ 11                  );
+
+Table MRE_TEMP_TIME_DIM_L2 created.
+
+SQL> 
+SQL> alter table mre_temp_time_dim_l2
+  2      add (
+  3          time_id varchar(20),
+  4          Year numeric(4),
+  5          Month numeric(2),
+  6          Season_id numeric(1));
+
+Table MRE_TEMP_TIME_DIM_L2 altered.
+
+SQL> 
+SQL> update mre_temp_time_dim_l2
+  2      set time_id = to_char(dates, 'YYYYMMDY'),
+  3          year = to_char(dates, 'YYYY'),
+  4          month = to_char(dates, 'MM');
+
+4,207 rows updated.
+
+SQL> 
+SQL> update mre_temp_time_dim_l2
+  2      set season_id = 
+  3          case
+  4              when month between 3 and 5 then 1
+  5              when month between 6 and 8 then 2
+  6              when month between 9 and 11 then 3
+  7              else 4
+  8          end;
+
+4,207 rows updated.
+
+SQL> 
+SQL> create table mre_time_dim_l2
+  2      as select DISTINCT(time_id), year, month, season_id
+  3          from mre_temp_time_dim_l2;
+
+Table MRE_TIME_DIM_L2 created.
+
+SQL> 
+SQL> -- Season DIM
+SQL> create table mre_season_dim_l2(
+  2      season_id numeric(1),
+  3      season_description char(10));
+
+Table MRE_SEASON_DIM_L2 created.
+
+SQL> 
+SQL> insert into mre_season_dim_l2 values(1, 'Spring');
+
+1 row inserted.
+
+SQL> insert into mre_season_dim_l2 values(2, 'Summer');
+
+1 row inserted.
+
+SQL> insert into mre_season_dim_l2 values(3, 'Autumn');
+
+1 row inserted.
+
+SQL> insert into mre_season_dim_l2 values(4, 'Winter');
+
+1 row inserted.
+
+SQL> 
+SQL> -- Fact tables
+SQL> -- Agent fact table
+SQL> create table mre_agent_fact_l2
+  2  as select a.person_id as agent_person_id, sum(nvl(s.price, 0)) + nvl(sum(nvl(r.price, 0)/7*(r.rent_end_date - r.rent_start_date)), 0) as total_earnings
+  3      from mre_agent a, mre_sale s, mre_rent r
+  4          where a.person_id = s.agent_person_id (+)
+  5          and a.person_id = r.agent_person_id (+)
+  6              group by a.person_id;
+
+Table MRE_AGENT_FACT_L2 created.
+
+SQL> 
+SQL> -- client fact table 
+SQL> create table mre_temp_client_l2
+  2      as select max_budget from mre_client;
+
+Table MRE_TEMP_CLIENT_L2 created.
+
+SQL> 
+SQL> alter table mre_temp_client_l2 
+  2      add budget_id char(2);
+
+Table MRE_TEMP_CLIENT_L2 altered.
+
+SQL> 
+SQL> update mre_temp_client_l2
+  2      set budget_id = case 
+  3          when max_budget between 0 and 1000 then 'l' 
+  4          when max_budget between 1001 and 100000 then 'm'
+  5          else 'h' end;
+
+3,334 rows updated.
+
+SQL> 
+SQL> create table mre_client_fact_l2
+  2      as select budget_id , count(*) as total_number_of_client
+  3          from mre_temp_client_l2
+  4              group by budget_id;
+
+Table MRE_CLIENT_FACT_L2 created.
+
+SQL> 
+SQL> -- rent fact
+SQL> create table mre_temp_rent_fact_l2
+  2      as select distinct 
+  3          r.property_id ,
+  4          r.rent_start_date as dates, 
+  5          p.property_no_of_bedrooms, 
+  6          COUNT(*) as number_of_features, 
+  7          r.price,
+  8          r.rent_end_date,
+  9          r.rent_start_date,
+ 10          count(distinct(rent_id)) as num_of_rent
+ 11              from mre_rent r, mre_property p, mre_property_feature f
+ 12                  where r.property_id = p.property_id
+ 13                      and p.property_id = f.property_id
+ 14                      and r.rent_start_date is not null
+ 15                          GROUP BY r.property_id, p.property_no_of_bedrooms, r.price, r.rent_end_date, r.rent_start_date;
+
+Table MRE_TEMP_RENT_FACT_L2 created.
+
+SQL> 
+SQL> alter table mre_temp_rent_fact_l2 add (
+  2      time_id varchar(20),
+  3      scale_id numeric(1),
+  4      feature_cat_id numeric(1));
+
+Table MRE_TEMP_RENT_FACT_L2 altered.
+
+SQL> 
+SQL> update mre_temp_rent_fact_l2
+  2      set time_id = to_char(rent_start_date, 'YYYYMMDY'),
+  3          scale_id =
+  4              case 
+  5                  when property_no_of_bedrooms between 0 and 1 then 1
+  6                  when property_no_of_bedrooms between 2 and 3 then 2
+  7                  when property_no_of_bedrooms between 4 and 6 then 3
+  8                  when property_no_of_bedrooms between 7 and 10 then 4
+  9                  else 5
+ 10              end;
+
+1,116 rows updated.
+
+SQL> 
+SQL> update mre_temp_rent_fact_l2 t
+  2         set feature_cat_id = 
+  3          (case when number_of_features < 10 then 1
+  4                      when number_of_features between 10 and 20 then 2
+  5                      else 3
+  6                  end);
+
+1,116 rows updated.
+
+SQL> 
+SQL> create table mre_rent_fact_l2
+  2      as select property_id, time_id, scale_id, feature_cat_id, (price / 7 *(rent_end_date - rent_start_date)) as total_rent_fee, num_of_rent as number_of_rent
+  3          from mre_temp_rent_fact_l2;
+
+Table MRE_RENT_FACT_L2 created.
+
+SQL> 
+SQL> -- visit fact
+SQL> create table mre_temp_visit_l2
+  2      as select visit_date 
+  3          from mre_visit;
+
+Table MRE_TEMP_VISIT_L2 created.
+
+SQL> 
+SQL> alter table mre_temp_visit_l2 
+  2      add visit_time_id varchar(20);
+
+Table MRE_TEMP_VISIT_L2 altered.
+
+SQL> 
+SQL> update mre_temp_visit_l2
+  2      set visit_time_id = to_char(visit_date, 'YYYYMMDY');
+
+574 rows updated.
+
+SQL> 
+SQL> create table mre_visit_fact_l2
+  2      as select visit_time_id, count(*) as number_of_visit
+  3          from mre_temp_visit_l2
+  4              group by visit_time_id;
+
+Table MRE_VISIT_FACT_L2 created.
+
+SQL> 
+SQL> -- sale fact
+SQL> create table mre_temp_sale_fact_l2
+  2      as select s.property_id, s.sale_date, p.property_type, s.price
+  3          from mre_sale s, mre_property p
+  4              where s.property_id = p.property_id
+  5                  and sale_date is not null;
+
+Table MRE_TEMP_SALE_FACT_L2 created.
+
+SQL> 
+SQL> alter table mre_temp_sale_fact_l2 add (
+  2      time_id varchar(20));
+
+Table MRE_TEMP_SALE_FACT_L2 altered.
+
+SQL> 
+SQL> set define off;
+SQL> update mre_temp_sale_fact_l2
+  2      set time_id = to_char(sale_date, 'YYYYMMDY');
+
+916 rows updated.
+
+SQL> 
+SQL> create table mre_sale_fact_l2
+  2      as select property_id, time_id, sum(price) as total_sales_price, count(*) as number_of_sales
+  3          from mre_temp_sale_fact_l2
+  4              group by property_id, time_id;
+
+Table MRE_SALE_FACT_L2 created.
+
+SQL> 
+SQL> -- Advert fact
+SQL> create table mre_temp_advert_l2
+  2      as select distinct a.advert_id, p.property_date_added
+  3          from mre_property_advert a, mre_property p
+  4              where p.property_id = a.property_id;
+
+Table MRE_TEMP_ADVERT_L2 created.
+
+SQL> 
+SQL> alter table mre_temp_advert_l2
+  2      add time_id varchar(20);
+
+Table MRE_TEMP_ADVERT_L2 altered.
+
+SQL> 
+SQL> update mre_temp_advert_l2
+  2      set time_id = to_char(property_date_added, 'YYYYMMDY');
+
+3,646 rows updated.
+
+SQL> 
+SQL> create table mre_advert_fact_l2
+  2      as select time_id, advert_id, count(*) as number_of_adverts
+  3          from mre_temp_advert_l2
+  4              group by time_id, advert_id;
+
+Table MRE_ADVERT_FACT_L2 created.
+
+SQL> 
+SQL> commit;
+
+Commit complete.
+
+SQL> 
+SQL> spool off;
