@@ -27,6 +27,10 @@ SELECT COUNT(*)
 	FROM (SELECT * FROM mre_person p, mre_agent a
 		WHERE p.person_id = a.person_id);
 
+SELECT *
+	FROM mre_agent
+        WHERE NOT person_id IN (SELECT person_id FROM mre_person);
+		
 DELETE FROM mre_agent WHERE NOT person_id IN (SELECT person_id FROM MRE_person);
 
 SELECT * FROM mre_agent WHERE salary < 0;
@@ -40,11 +44,23 @@ SELECT COUNT(*) FROM mre_agent_office;
 
 SELECT COUNT(DISTINCT(person_id)) FROM mre_agent_office;
 
+SELECT *
+    FROM mre_agent_office
+        WHERE NOT person_id IN (SELECT person_id FROM mre_agent);
+
+DELETE FROM mre_agent_office WHERE NOT person_id IN (SELECT person_id FROM mre_agent);
+
+SELECT COUNT(*) FROM mre_agent_office;
+
 --Client
 SELECT COUNT(*) FROM mre_client;
 
 SELECT COUNT(*) FROM mre_person p, mre_client c
 	WHERE p.person_id = c.person_id;
+    
+SELECT *
+    FROM mre_client
+        WHERE NOT person_id IN (SELECT person_id FROM mre_person);
 
 DELETE FROM mre_client
 	WHERE NOT person_id IN (SELECT person_id FROM mre_person);
@@ -90,6 +106,11 @@ SELECT COUNT(*) FROM mre_property;
 
 SELECT COUNT(DISTINCT(property_id)) FROM mre_property;
 
+SELECT *
+    FROM mre_property p
+        WHERE rowid > (SELECT MIN(rowid)FROM mre_property p2
+		WHERE p.property_id = p2.property_id); 
+
 DELETE FROM mre_property p
 	WHERE rowid > (SELECT MIN(rowid)FROM mre_property p2
 		WHERE p.property_id = p2.property_id);
@@ -97,7 +118,7 @@ DELETE FROM mre_property p
 SELECT COUNT(*) FROM mre_property;
 
 --Property_Advert
-SELECT COUNT(*) FROM mre_property;
+SELECT COUNT(*) FROM mre_property_advert;
 
 ---Property_Feature
 SELECT COUNT(*) FROM mre_property_feature;

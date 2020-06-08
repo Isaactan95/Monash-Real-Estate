@@ -480,7 +480,7 @@ SQL> UPDATE MRE_Office_TempDIM_L0
   6          WHEN Num_of_Employees > 12 THEN 3
   7       END);
 
-1,174 rows updated.
+1,173 rows updated.
 
 SQL> 
 SQL> CREATE TABLE MRE_Office_DIM_L0 AS (
