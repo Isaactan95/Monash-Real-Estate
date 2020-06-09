@@ -183,8 +183,8 @@ CREATE TABLE MRE_Budget_DIM_L0 (
 );
 
 INSERT INTO MRE_Budget_DIM_L0 VALUES (1, 'Low [0 to 1,000]', 0, 1000);
-INSERT INTO MRE_Budget_DIM_L0 VALUES (3, 'Medium [1,001 to 100,000]', 1001, 100000);
-INSERT INTO MRE_Budget_DIM_L0 VALUES (5, 'High [100,001 to 10,000,000]', 100001, 10000000);    
+INSERT INTO MRE_Budget_DIM_L0 VALUES (2, 'Medium [1,001 to 100,000]', 1001, 100000);
+INSERT INTO MRE_Budget_DIM_L0 VALUES (3, 'High [100,001 to 10,000,000]', 100001, 10000000);    
 
 -- MRE_Rental_Period_DIM_L0
 CREATE TABLE MRE_Rental_Period_DIM_L0 (
@@ -349,8 +349,8 @@ UPDATE MRE_Client_TempFACT_L0
 SET Budget_ID = 
     (CASE
         WHEN Max_Budget >= 0 AND Max_Budget <= 1000 THEN 1
-        WHEN Max_Budget >= 1001 AND Max_Budget <= 100000 THEN 3
-        WHEN Max_Budget >= 100001 AND Max_Budget <= 10000000 THEN 5
+        WHEN Max_Budget >= 1001 AND Max_Budget <= 100000 THEN 2
+        WHEN Max_Budget >= 100001 AND Max_Budget <= 10000000 THEN 3
     END);    
 
 CREATE TABLE MRE_Client_FACT_L0 AS (

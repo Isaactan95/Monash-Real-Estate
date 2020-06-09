@@ -125,12 +125,12 @@ update mre_office_dim_l2 t
 
 -- Budget dimension 
 create table mre_budget_dim_l2(
-    budget_id char(2),
+    budget_id numeric(1),
     budget_description varchar(100));
 
-insert into mre_budget_dim_l2 values ('l', 'Budget between 0 and 1000');
-insert into mre_budget_dim_l2 values ('m', 'Budget between 1001 and 100000');
-insert into mre_budget_dim_l2 values ('h', 'Budget more than 100001');
+insert into mre_budget_dim_l2 values (1, 'Budget between 0 and 1000');
+insert into mre_budget_dim_l2 values (2, 'Budget between 1001 and 100000');
+insert into mre_budget_dim_l2 values (3, 'Budget more than 100001');
 
 -- Rental period DIM
 create table mre_rental_period_dim_l2(
@@ -213,13 +213,13 @@ create table mre_temp_client_l2
     as select max_budget from mre_client;
 
 alter table mre_temp_client_l2 
-    add budget_id char(2);
+    add budget_id numeric(1);
 
 update mre_temp_client_l2
     set budget_id = case 
-        when max_budget between 0 and 1000 then 'l' 
-        when max_budget between 1001 and 100000 then 'm'
-        else 'h' end;
+        when max_budget between 0 and 1000 then 1
+        when max_budget between 1001 and 100000 then 2
+        else 3 end;
 
 create table mre_client_fact_l2
     as select budget_id , count(*) as total_number_of_client
