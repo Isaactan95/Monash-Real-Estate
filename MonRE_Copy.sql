@@ -1,0 +1,70 @@
+DROP TABLE MRE_Address PURGE;
+DROP TABLE MRE_Advertisement PURGE;
+DROP TABLE MRE_Agent PURGE;
+DROP TABLE MRE_Agent_Office PURGE;
+DROP TABLE MRE_Client PURGE;
+DROP TABLE MRE_Client_Wish PURGE;
+DROP TABLE MRE_Feature PURGE;
+DROP TABLE MRE_Office PURGE;
+DROP TABLE MRE_Person PURGE;
+DROP TABLE MRE_Postcode PURGE;
+DROP TABLE MRE_Property PURGE;
+DROP TABLE MRE_Property_Advert PURGE;
+DROP TABLE MRE_Property_Feature PURGE;
+DROP TABLE MRE_Rent PURGE;
+DROP TABLE MRE_Sale PURGE;
+DROP TABLE MRE_State PURGE;
+DROP TABLE MRE_Visit PURGE;
+
+CREATE TABLE MRE_Address as
+	SELECT * FROM MonRE.Address;
+
+CREATE TABLE MRE_Advertisement as
+	SELECT * FROM MonRE.Advertisement;
+
+CREATE TABLE MRE_Agent as
+	SELECT * FROM Monre.Agent;
+
+CREATE TABLE MRE_Agent_Office as
+	SELECT * FROM MonRE.Agent_Office;
+
+CREATE TABLE MRE_Client as
+	SELECT * FROM MonRE.Client;
+
+CREATE TABLE MRE_Client_Wish as
+	SELECT * FROM MonRE.Client_Wish;
+
+CREATE TABLE MRE_Feature as
+	SELECT * FROM MonRE.Feature;
+
+CREATE TABLE MRE_Office as
+	SELECT * FROM MonRE.Office;
+
+CREATE TABLE MRE_Person as
+	SELECT * FROM MonRE.Person;
+
+CREATE TABLE MRE_Postcode as
+	SELECT * FROM MonRE.Postcode;
+
+CREATE TABLE MRE_Property as
+	SELECT * FROM MonRE.Property;
+
+CREATE TABLE MRE_Property_Advert as
+	SELECT * FROM MonRE.Property_Advert;
+
+CREATE TABLE MRE_Property_Feature as
+	SELECT * FROM MonRE.Property_Feature;
+
+CREATE TABLE MRE_Rent as
+	SELECT * FROM MonRE.Rent;
+
+CREATE TABLE MRE_Sale as
+	SELECT * FROM MonRE.Sale;
+
+CREATE TABLE MRE_State as
+	SELECT * FROM MonRE.State;
+
+CREATE TABLE MRE_Visit as
+	SELECT * FROM MonRE.Visit;
+
+

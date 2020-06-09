@@ -26,16 +26,16 @@ extra small          Braddon                                                    
 small                City                                                                                                               9          6
 small                Brisbane City                                                                                                      8          7
 extra small          St Kilda                                                                                                           8          8
-extra small          Kingston                                                                                                           8          9
-small                Adelaide                                                                                                           8         10
-small                Manly                                                                                                              7         11
+small                Adelaide                                                                                                           8          9
+extra small          Kingston                                                                                                           8         10
+small                Collingwood                                                                                                        7         11
 
 SCALE                SUBURB                                                                                               NUMBER_OF_RENTS       RANK
 -------------------- ---------------------------------------------------------------------------------------------------- --------------- ----------
-small                Collingwood                                                                                                        7         12
-small                Griffith                                                                                                           7         13
+extra small          Sydney                                                                                                             7         12
+small                Belconnen                                                                                                          7         13
 extra small          Belconnen                                                                                                          7         14
-extra small          Sydney                                                                                                             7         15
+small                Manly                                                                                                              7         15
 
 15 rows selected. 
 
@@ -58,8 +58,8 @@ SQL> SELECT *
 
       YEAR      MONTH PROPERTY_TYPE                                      TOTAL_SALES_PRICE NUMBER_OF_SALES REVENUE_RANKING
 ---------- ---------- -------------------------------------------------- ----------------- --------------- ---------------
-      2019         12 Vacant land                                                 32265900              48      .985507246
       2019         12 Development Site                                            32265900              48      .985507246
+      2019         12 Vacant land                                                 32265900              48      .985507246
       2019         12 Penthouse                                                   48398850              72      .971014493
       2019         12 Block of Units                                             112930650             168      .956521739
       2020          4 Development Site                                           138551800             174      .927536232

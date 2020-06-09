@@ -1,9 +1,10 @@
 SQL> 
+SQL> 
 SQL> -- Task c 2b)
 SQL> -- Level 2 multi-fact star schema
 SQL> DROP TABLE MRE_scale_DIM_l2 PURGE;
 
-Error starting at line : 7 in command -
+Error starting at line : 8 in command -
 DROP TABLE MRE_scale_DIM_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -12,7 +13,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_feature_cat_DIM_l2 PURGE;
 
-Error starting at line : 8 in command -
+Error starting at line : 9 in command -
 DROP TABLE MRE_feature_cat_DIM_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -21,7 +22,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_property_dim_l2 PURGE;
 
-Error starting at line : 9 in command -
+Error starting at line : 10 in command -
 DROP TABLE MRE_property_dim_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -30,7 +31,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_property_feature_bridge_l2 PURGE;
 
-Error starting at line : 10 in command -
+Error starting at line : 11 in command -
 DROP TABLE MRE_property_feature_bridge_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -39,7 +40,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_feature_dim_l2 PURGE;
 
-Error starting at line : 11 in command -
+Error starting at line : 12 in command -
 DROP TABLE MRE_feature_dim_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -48,7 +49,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_property_type_dim_l2 PURGE;
 
-Error starting at line : 12 in command -
+Error starting at line : 13 in command -
 DROP TABLE MRE_property_type_dim_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -57,7 +58,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_address_dim_l2 PURGE;
 
-Error starting at line : 13 in command -
+Error starting at line : 14 in command -
 DROP TABLE MRE_address_dim_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -66,7 +67,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_postcode_dim_l2 PURGE;
 
-Error starting at line : 14 in command -
+Error starting at line : 15 in command -
 DROP TABLE MRE_postcode_dim_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -75,7 +76,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_state_dim_l2 PURGE;
 
-Error starting at line : 15 in command -
+Error starting at line : 16 in command -
 DROP TABLE MRE_state_dim_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -84,7 +85,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_advertisement_dim_l2 PURGE;
 
-Error starting at line : 16 in command -
+Error starting at line : 17 in command -
 DROP TABLE MRE_advertisement_dim_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -93,7 +94,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_person_dim_l2 PURGE;
 
-Error starting at line : 17 in command -
+Error starting at line : 18 in command -
 DROP TABLE MRE_person_dim_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -102,7 +103,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_agent_office_dim_l2 PURGE;
 
-Error starting at line : 18 in command -
+Error starting at line : 19 in command -
 DROP TABLE MRE_agent_office_dim_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -111,7 +112,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_office_dim_l2 PURGE;
 
-Error starting at line : 19 in command -
+Error starting at line : 20 in command -
 DROP TABLE MRE_office_dim_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -120,7 +121,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_budget_dim_l2 PURGE;
 
-Error starting at line : 20 in command -
+Error starting at line : 21 in command -
 DROP TABLE MRE_budget_dim_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -129,7 +130,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_rental_period_dim_l2 PURGE;
 
-Error starting at line : 21 in command -
+Error starting at line : 22 in command -
 DROP TABLE MRE_rental_period_dim_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -138,7 +139,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_wishlist_dim_l2 PURGE;
 
-Error starting at line : 22 in command -
+Error starting at line : 23 in command -
 DROP TABLE MRE_wishlist_dim_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -147,7 +148,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_rent_price_dim_l2 PURGE;
 
-Error starting at line : 23 in command -
+Error starting at line : 24 in command -
 DROP TABLE MRE_rent_price_dim_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -156,7 +157,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_temp_time_dim_l2 PURGE;
 
-Error starting at line : 24 in command -
+Error starting at line : 25 in command -
 DROP TABLE MRE_temp_time_dim_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -165,7 +166,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_time_dim_l2 PURGE;
 
-Error starting at line : 25 in command -
+Error starting at line : 26 in command -
 DROP TABLE MRE_time_dim_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -174,7 +175,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_season_dim_l2 PURGE;
 
-Error starting at line : 26 in command -
+Error starting at line : 27 in command -
 DROP TABLE MRE_season_dim_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -183,7 +184,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_agent_fact_l2 PURGE;
 
-Error starting at line : 27 in command -
+Error starting at line : 28 in command -
 DROP TABLE MRE_agent_fact_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -192,7 +193,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_temp_client_l2 PURGE;
 
-Error starting at line : 28 in command -
+Error starting at line : 29 in command -
 DROP TABLE MRE_temp_client_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -201,7 +202,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_client_fact_l2 PURGE;
 
-Error starting at line : 29 in command -
+Error starting at line : 30 in command -
 DROP TABLE MRE_client_fact_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -210,7 +211,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_temp_rent_fact_l2 PURGE;
 
-Error starting at line : 30 in command -
+Error starting at line : 31 in command -
 DROP TABLE MRE_temp_rent_fact_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -219,7 +220,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_rent_fact_l2 PURGE;
 
-Error starting at line : 31 in command -
+Error starting at line : 32 in command -
 DROP TABLE MRE_rent_fact_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -228,7 +229,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_temp_visit_l2 PURGE;
 
-Error starting at line : 32 in command -
+Error starting at line : 33 in command -
 DROP TABLE MRE_temp_visit_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -237,7 +238,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_visit_fact_l2 PURGE;
 
-Error starting at line : 33 in command -
+Error starting at line : 34 in command -
 DROP TABLE MRE_visit_fact_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -246,7 +247,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_temp_sale_fact_l2 PURGE;
 
-Error starting at line : 34 in command -
+Error starting at line : 35 in command -
 DROP TABLE MRE_temp_sale_fact_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -255,7 +256,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_sale_fact_l2 PURGE;
 
-Error starting at line : 35 in command -
+Error starting at line : 36 in command -
 DROP TABLE MRE_sale_fact_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -264,7 +265,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_temp_advert_l2 PURGE;
 
-Error starting at line : 36 in command -
+Error starting at line : 37 in command -
 DROP TABLE MRE_temp_advert_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
@@ -273,7 +274,7 @@ ORA-00942: table or view does not exist
 *Action:
 SQL> DROP TABLE MRE_advert_fact_l2 PURGE;
 
-Error starting at line : 37 in command -
+Error starting at line : 38 in command -
 DROP TABLE MRE_advert_fact_l2 PURGE
 Error report -
 ORA-00942: table or view does not exist
